@@ -1,0 +1,1315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Skincare Stack</title>
+
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --white:#FFFFFF;--off:#FAF8F5;--surface:#F5F0EB;
+  --border:#E4DDD6;--border2:#EDE8E3;
+  --ink:#1A1410;--ink2:#4A3728;--ink3:#9E8878;
+  --bloom:#F07C3A;--bloom-l:#FEF3EB;--bloom-m:#FDDCC8;
+  --petal:#C17A50;--petal-l:#FAF0E8;
+  --leaf:#7A9E6E;--leaf-l:#EDF4EA;
+  --sky:#D4956A;--sky-l:#FBF0E8;
+  --sun:#E8B86D;--sun-l:#FDF6E8;
+  --danger:#D94F3A;--warn:#D4860A;--safe:#4A9B72;
+}
+body{font-family:'SF Pro Text',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--white);color:var(--ink);min-height:100vh}
+
+/* NAV */
+.topnav{position:sticky;top:0;z-index:200;background:#1A1410;border-bottom:none;padding:0 12px;display:flex;align-items:center;justify-content:center;height:52px}
+.mode-tabs{display:flex;background:rgba(255,255,255,.1);border-radius:10px;padding:4px;gap:2px;width:100%;max-width:420px}
+.mode-tab{flex:1;padding:8px 0;border:none;border-radius:7px;font-family:'SF Pro Text',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;background:transparent;color:rgba(255,255,255,.5);white-space:nowrap;text-align:center}
+.mode-tab.active{background:var(--bloom);color:#fff;box-shadow:0 2px 8px rgba(240,124,58,.5)}
+
+/* VIEWS */
+.view{display:none}.view.active{display:block}
+
+/* SHELF */
+.shelf-view{max-width:920px;margin:0 auto;padding:32px 24px}
+.view-heading{margin-bottom:28px}
+.view-heading h2{font-family:'Georgia','Times New Roman',serif;font-size:28px;font-weight:400;margin-bottom:6px}
+.view-heading p{font-size:13px;color:var(--ink3);line-height:1.6}
+.product-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(252px,1fr));gap:12px;margin-bottom:24px}
+
+.shelf-card{border:1.5px solid var(--border);border-radius:16px;padding:18px;background:var(--white);transition:all .18s}
+.shelf-card:hover{box-shadow:0 4px 16px rgba(0,0,0,.06);border-color:var(--bloom-m)}
+.shelf-card.finish-first{border-color:var(--sun);background:var(--sun-l)}
+.card-top{display:flex;align-items:flex-start;gap:12px;margin-bottom:12px}
+.card-icon{width:42px;height:42px;border-radius:12px;background:var(--surface);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.card-name{font-size:13px;font-weight:600;line-height:1.3;margin-bottom:2px}
+.card-brand{font-size:11.5px;color:var(--ink3)}
+.card-tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px}
+.tag{font-size:10px;padding:3px 9px;border-radius:20px;font-weight:600;letter-spacing:.03em}
+.t-am{background:#FEF9C3;color:#92400E}.t-pm{background:var(--petal-l);color:#8B4513}
+.t-both{background:var(--surface);color:var(--ink2)}.t-active{background:var(--bloom-l);color:#C06030}
+.t-weekly{background:var(--leaf-l);color:#3A6828}.t-finish{background:var(--sun-l);color:#92400E;border:1px solid #FCD34D}
+.card-ings{display:flex;flex-wrap:wrap;gap:4px}
+.ing-pill{font-size:10px;padding:2px 8px;border-radius:20px;background:var(--surface);color:var(--ink2);font-weight:500}
+.ing-pill.hi{background:var(--bloom-l);color:#C06030}
+.card-actions{display:flex;gap:6px;margin-top:13px;padding-top:12px;border-top:1px solid var(--border2)}
+.card-btn{flex:1;padding:7px 0;border-radius:8px;font-size:11px;font-weight:600;letter-spacing:.04em;font-family:'SF Pro Text',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;cursor:pointer;transition:all .15s;border:1.5px solid var(--border);background:transparent;color:var(--ink2)}
+.card-btn:hover{border-color:var(--bloom);color:var(--bloom)}
+.card-btn.del:hover{border-color:var(--danger);color:var(--danger)}
+.card-btn.finish-on{background:var(--sun-l);border-color:var(--sun);color:#92400E}
+
+.add-card{border:2px dashed var(--border);border-radius:16px;padding:28px 16px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;cursor:pointer;transition:all .18s;min-height:160px}
+.add-card:hover{border-color:var(--bloom);background:var(--bloom-l)}
+.add-icon{width:44px;height:44px;border-radius:50%;background:var(--bloom-l);display:flex;align-items:center;justify-content:center;font-size:22px;transition:background .15s}
+.add-card:hover .add-icon{background:var(--bloom-m)}
+.add-label{font-size:13px;font-weight:600;color:var(--ink2)}
+.add-sub{font-size:11.5px;color:var(--ink3)}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;z-index:500;background:rgba(28,28,46,.4);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .22s}
+.modal-overlay.open{opacity:1;pointer-events:all}
+.modal{background:var(--white);border-radius:22px;width:100%;max-width:500px;max-height:92vh;overflow-y:auto;box-shadow:0 24px 64px rgba(0,0,0,.18);transform:translateY(16px);transition:transform .22s}
+.modal-overlay.open .modal{transform:translateY(0)}
+.modal::-webkit-scrollbar{width:0}
+.modal-head{padding:24px 24px 0;display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.modal-head h3{font-family:'Georgia','Times New Roman',serif;font-size:23px;font-weight:400}
+.modal-close{width:32px;height:32px;border-radius:50%;background:var(--surface);border:none;cursor:pointer;font-size:15px;color:var(--ink2);display:flex;align-items:center;justify-content:center}
+.modal-sub{padding:0 24px 20px;font-size:12.5px;color:var(--ink3);line-height:1.6}
+.modal-body{padding:0 24px;display:flex;flex-direction:column;gap:16px}
+
+.field label{display:block;font-size:10.5px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--ink3);margin-bottom:6px}
+.field input,.field select{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:11px;font-family:'SF Pro Text',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:13.5px;color:var(--ink);background:var(--white);outline:none;transition:border-color .15s}
+.field input:focus,.field select:focus{border-color:var(--bloom)}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+/* Search + suggestions */
+.search-wrap{position:relative}
+.search-wrap input{width:100%;padding:11px 44px 11px 14px;border:1.5px solid var(--border);border-radius:11px;font-family:'SF Pro Text',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:13.5px;color:var(--ink);background:var(--white);outline:none;transition:border-color .15s}
+.search-wrap input:focus{border-color:var(--bloom)}
+.search-clear{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:14px;color:var(--ink3);display:none}
+
+.suggestions{background:var(--white);border:1.5px solid var(--bloom-m);border-radius:12px;overflow:hidden;margin-top:6px;display:none;box-shadow:0 8px 24px rgba(255,107,138,.1)}
+.suggestions.show{display:block}
+.sug-item{padding:11px 14px;cursor:pointer;border-bottom:1px solid var(--border2);transition:background .12s;display:flex;align-items:center;gap:10px}
+.sug-item:last-child{border-bottom:none}
+.sug-item:hover{background:var(--bloom-l)}
+.sug-icon{font-size:16px;flex-shrink:0}
+.sug-info{flex:1;min-width:0}
+.sug-name{font-size:12.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sug-brand{font-size:11px;color:var(--ink3)}
+.sug-ings{display:flex;flex-wrap:wrap;gap:3px;margin-top:3px}
+.sug-ing{font-size:9.5px;padding:1px 7px;border-radius:20px;background:var(--bloom-l);color:#C06030;font-weight:600}
+.sug-none{padding:14px;font-size:12.5px;color:var(--ink3);text-align:center;font-style:italic}
+
+/* Matched result card */
+.match-card{border-radius:12px;padding:14px 16px;border:1.5px solid var(--leaf);background:var(--leaf-l);display:none;flex-direction:column;gap:8px;animation:fadeIn .2s ease}
+.match-card.show{display:flex}
+.match-card.partial{border-color:var(--sun);background:var(--sun-l)}
+.match-card.manual{border-color:var(--border);background:var(--surface)}
+@keyframes fadeIn{from{opacity:0;transform:translateY(3px)}to{opacity:1;transform:translateY(0)}}
+.mc-head{display:flex;align-items:center;gap:8px}
+.mc-icon{font-size:17px}
+.mc-title{font-size:13px;font-weight:600}
+.mc-detail{font-size:12px;color:var(--ink2);line-height:1.6}
+.mc-ings{display:flex;flex-wrap:wrap;gap:4px;margin-top:2px}
+.mc-ing{font-size:10.5px;padding:2px 9px;border-radius:20px;background:white;color:var(--ink);border:1.5px solid var(--border);font-weight:500}
+.mc-ing.hi{background:var(--bloom);border-color:var(--bloom);color:white}
+.mc-note{font-size:11px;color:var(--ink3);font-style:italic;margin-top:2px}
+
+.toggle-row{display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:11px;background:var(--surface);cursor:pointer}
+.toggle-row input[type=checkbox]{accent-color:var(--bloom);width:16px;height:16px;flex-shrink:0}
+.toggle-text strong{display:block;font-size:13px;font-weight:500}
+.toggle-text span{font-size:11.5px;color:var(--ink3)}
+.modal-footer{display:flex;gap:10px;padding:20px 24px 24px}
+.btn-primary{flex:1;padding:13px;background:var(--bloom);color:white;border:none;border-radius:12px;cursor:pointer;font-size:14px;font-weight:600;font-family:'SF Pro Text',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;transition:background .15s}
+.btn-primary:hover{background:#e5577a}
+.btn-secondary{padding:13px 20px;background:var(--surface);color:var(--ink2);border:none;border-radius:12px;cursor:pointer;font-size:13.5px;font-weight:500;font-family:'SF Pro Text',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+
+/* TODAY VIEW */
+.today-view{display:grid;grid-template-columns:340px 1fr;height:calc(100vh - 58px)}
+.picker-panel{border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
+.picker-head{padding:20px 20px 14px;border-bottom:1px solid var(--border2)}
+.picker-head h3{font-family:'Georgia','Times New Roman',serif;font-size:19px;font-weight:400;margin-bottom:12px}
+.am-pm-row{display:flex;background:var(--surface);border-radius:10px;padding:4px;gap:4px}
+.ap-btn{flex:1;padding:8px 0;text-align:center;border:none;border-radius:7px;font-family:'SF Pro Text',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:12.5px;font-weight:600;cursor:pointer;transition:all .2s;background:transparent;color:var(--ink3)}
+.ap-btn.active{background:var(--white);color:var(--ink);box-shadow:0 1px 4px rgba(0,0,0,.08)}
+.picker-scroll{flex:1;overflow-y:auto;padding:12px 16px}
+.picker-scroll::-webkit-scrollbar{width:3px}
+.picker-scroll::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+.picker-step-label{font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--ink3);margin:14px 0 6px;padding-left:2px}
+.picker-step-label:first-child{margin-top:2px}
+.pick-item{display:flex;align-items:center;gap:11px;padding:11px 13px;border-radius:12px;border:1.5px solid var(--border);margin-bottom:7px;cursor:pointer;transition:all .17s;background:var(--white)}
+.pick-item:hover{border-color:var(--bloom-m);background:var(--bloom-l)}
+.pick-item.selected{border-color:var(--bloom);background:var(--bloom-l);box-shadow:0 2px 8px rgba(255,107,138,.1)}
+.pick-item.finish-first-item{border-left:3px solid var(--sun)}
+.pick-emoji{font-size:18px;flex-shrink:0}
+.pick-info{flex:1;min-width:0}
+.pick-name{font-size:12.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pick-brand{font-size:11px;color:var(--ink3);margin-top:1px}
+.pick-check{width:20px;height:20px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .17s}
+.pick-item.selected .pick-check{background:var(--bloom);border-color:var(--bloom)}
+.picker-foot{padding:14px 16px;border-top:1px solid var(--border2)}
+.sel-count{font-size:11.5px;color:var(--ink3);text-align:center;margin-bottom:10px}
+.sel-count em{color:var(--bloom);font-style:normal;font-weight:600}
+.check-btn{width:100%;padding:13px;background:var(--ink);color:white;border:none;border-radius:12px;cursor:pointer;font-size:13.5px;font-weight:600;font-family:'SF Pro Text',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;transition:background .2s;letter-spacing:.04em}
+.check-btn:hover{background:var(--bloom)}
+.check-btn:disabled{opacity:.3;cursor:default;background:var(--ink)}
+
+/* RESULTS */
+.results-panel{overflow-y:auto;padding:28px 32px;display:flex;flex-direction:column;gap:20px;background:var(--off)}
+.results-panel::-webkit-scrollbar{width:4px}
+.results-panel::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+.empty-state{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:14px;padding:60px 20px}
+.empty-bloom{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--bloom-l),var(--petal-l));display:flex;align-items:center;justify-content:center;font-size:32px;margin:0 auto}
+.empty-state h3{font-family:'Georgia','Times New Roman',serif;font-size:24px;font-weight:400}
+.empty-state p{font-size:13px;color:var(--ink3);max-width:240px;line-height:1.7}
+.result-card{background:var(--white);border-radius:16px;border:1.5px solid var(--border);overflow:hidden;animation:riseUp .3s ease both}
+@keyframes riseUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.rc-head{padding:18px 22px 14px;border-bottom:1px solid var(--border2);display:flex;align-items:center;gap:10px}
+.rc-head h3{font-family:'Georgia','Times New Roman',serif;font-size:18px;font-weight:400;flex:1}
+.status-pill{padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:.05em}
+.sp-ok{background:var(--leaf-l);color:#3A6828}.sp-warn{background:#FEF3C7;color:#92400E}.sp-bad{background:#FEE2E2;color:#C05020}
+.rc-body{padding:18px 22px;font-size:13px;line-height:1.85;color:var(--ink2)}
+.rc-body strong{color:var(--ink)}.rc-body p+p{margin-top:12px}
+.conflict-block{background:#FEF2F2;border:1.5px solid #FECACA;border-radius:12px;padding:14px 16px;margin-bottom:12px}
+.conflict-block h4{font-size:13px;font-weight:700;color:var(--danger);margin-bottom:6px}
+.conflict-block p{font-size:12.5px;color:var(--ink2);line-height:1.65}
+.caution-block{background:#FFFBEB;border:1.5px solid #FDE68A;border-radius:12px;padding:14px 16px;margin-bottom:12px}
+.caution-block h4{font-size:13px;font-weight:700;color:var(--warn);margin-bottom:6px}
+.caution-block p{font-size:12.5px;color:var(--ink2);line-height:1.65}
+.ok-block{background:var(--leaf-l);border:1.5px solid #BBF7D0;border-radius:12px;padding:14px 16px;margin-bottom:12px}
+.ok-block h4{font-size:13px;font-weight:700;color:#3A6828;margin-bottom:6px}
+.ok-block p{font-size:12.5px;color:var(--ink2);line-height:1.65}
+.tip-block{background:var(--sky-l);border:1.5px solid #FDDCC8;border-radius:12px;padding:14px 16px;margin-bottom:0}
+.tip-block h4{font-size:13px;font-weight:700;color:#5A7A4A;margin-bottom:6px}
+.tip-block p{font-size:12.5px;color:var(--ink2);line-height:1.65}
+.order-list{padding:6px 22px 18px;display:flex;flex-direction:column}
+.order-row{display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid var(--border2);animation:riseUp .3s ease both}
+.order-row:last-child{border-bottom:none}
+.or-num{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11.5px;font-weight:700;flex-shrink:0}
+.sn-1{background:#FEF0EB;color:#C05020}.sn-2{background:#FDF6E8;color:#92500E}.sn-3{background:#FEF3EB;color:#C06030}.sn-4{background:#FAF0E8;color:#8B4513}.sn-5{background:#F5F8F0;color:#4A6830}.sn-6{background:#EDF4EA;color:#3A6828}.sn-7{background:#FDF8EC;color:#8B6010}
+.or-body{flex:1}.or-name{font-size:13px;font-weight:600}.or-sub{font-size:11px;color:var(--ink3);margin-top:2px}
+.or-badge{font-size:10.5px;padding:3px 10px;border-radius:20px;background:var(--surface);color:var(--ink2);font-weight:600}
+.finish-strip{background:var(--sun-l);border:1.5px solid #FCD34D;border-radius:16px;padding:18px 20px;animation:riseUp .3s ease .2s both}
+.strip-head{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.strip-head h4{font-family:'Georgia','Times New Roman',serif;font-size:17px;font-weight:400}
+.finish-items{display:flex;flex-direction:column;gap:8px}
+.finish-item{display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.7);border-radius:10px;padding:10px 14px}
+.fi-left{display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:500}
+.fi-bar-wrap{width:80px}
+.fi-uses{font-size:10.5px;color:var(--ink3);text-align:right;margin-bottom:3px}
+.fi-bar{width:100%;height:5px;background:rgba(0,0,0,.08);border-radius:3px;overflow:hidden}
+.fi-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--sun),var(--bloom))}
+
+/* UNOPENED SHELF */
+.shelf-card.unopened{border-style:dashed;border-color:var(--petal);background:var(--petal-l);opacity:.95}
+.unopened-badge{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:700;letter-spacing:.06em;padding:3px 9px;border-radius:20px;background:var(--petal-l);color:#8B4513;border:1px solid var(--petal);margin-bottom:8px}
+.card-btn.open-btn{background:var(--petal-l);border-color:var(--petal);color:#8B4513}
+.card-btn.open-btn:hover{background:var(--petal);color:white;border-color:var(--petal)}
+
+/* COMBO UPGRADE CARDS */
+.combo-card.upgrade{border-color:var(--petal);background:linear-gradient(135deg,#fff 60%,var(--petal-l))}
+.upgrade-banner{background:var(--petal);color:white;font-size:10.5px;font-weight:700;letter-spacing:.06em;padding:5px 18px;text-align:center}
+.upgrade-section{padding:12px 18px;background:var(--petal-l);border-top:1px solid rgba(193,122,80,.2)}
+.upgrade-section-title{font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#8B4513;margin-bottom:8px}
+.upgrade-row{display:flex;align-items:flex-start;gap:8px;margin-bottom:8px}
+.upgrade-icon{font-size:14px;flex-shrink:0;margin-top:1px}
+.upgrade-text{font-size:11.5px;color:var(--ink2);line-height:1.5}
+.upgrade-text strong{color:var(--ink)}
+.upgrade-clash{background:#FEE2E2;border-radius:8px;padding:8px 12px;font-size:11.5px;color:var(--danger);display:flex;gap:6px;align-items:flex-start;margin-top:4px}
+.suggest-open-btn{width:100%;padding:9px;background:var(--petal);color:white;border:none;border-radius:8px;cursor:pointer;font-size:12px;font-weight:700;font-family:-apple-system,BlinkMacSystemFont,sans-serif;letter-spacing:.04em;margin-top:8px;transition:background .15s}
+.suggest-open-btn:hover{background:#A0622A}
+.combo-section-divider{display:flex;align-items:center;gap:12px;margin:28px 0 20px}
+.combo-section-divider h3{font-family:Georgia,serif;font-size:20px;font-weight:400;white-space:nowrap}
+.combo-section-divider::before,.combo-section-divider::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* COMBO VIEW */
+.combo-view{max-width:860px;margin:0 auto;padding:32px 24px}
+.combo-section{margin-bottom:32px}
+.combo-section-head{display:flex;align-items:center;gap:10px;margin-bottom:16px;padding-bottom:12px;border-bottom:2px solid var(--border)}
+.combo-section-head h3{font-family:'Georgia','Times New Roman',serif;font-size:22px;font-weight:400}
+.combo-time-badge{padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:.05em}
+.ctb-am{background:#FEF9C3;color:#92400E}
+.ctb-pm{background:var(--petal-l);color:#8B4513}
+.combo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:14px}
+.combo-card{border:1.5px solid var(--border);border-radius:16px;background:var(--white);overflow:hidden;transition:box-shadow .18s}
+.combo-card:hover{box-shadow:0 6px 20px rgba(0,0,0,.07)}
+.combo-card-head{padding:16px 18px 12px;border-bottom:1px solid var(--border2);display:flex;align-items:flex-start;gap:10px}
+.combo-score{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.score-great{background:var(--leaf-l)}
+.score-good{background:var(--sky-l)}
+.score-synergy{background:var(--bloom-l)}
+.combo-head-text{flex:1}
+.combo-name{font-size:13.5px;font-weight:700;margin-bottom:2px}
+.combo-why{font-size:11.5px;color:var(--ink3);line-height:1.5}
+.combo-products{padding:12px 18px;display:flex;flex-direction:column;gap:8px}
+.combo-product-row{display:flex;align-items:center;gap:10px}
+.cp-num{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;background:var(--surface);color:var(--ink2)}
+.cp-info{flex:1;min-width:0}
+.cp-name{font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cp-brand{font-size:10.5px;color:var(--ink3)}
+.cp-ings{display:flex;flex-wrap:wrap;gap:3px;margin-top:2px}
+.cp-ing{font-size:9.5px;padding:1px 7px;border-radius:20px;background:var(--bloom-l);color:#C06030;font-weight:600}
+.combo-footer{padding:10px 18px 14px;background:var(--off);display:flex;align-items:center;gap:6px}
+.combo-footer-text{font-size:11.5px;color:var(--ink2);line-height:1.5;flex:1}
+.use-combo-btn{padding:7px 14px;background:var(--bloom);color:white;border:none;border-radius:8px;cursor:pointer;font-size:11.5px;font-weight:600;font-family:'SF Pro Text',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;white-space:nowrap;transition:background .15s;flex-shrink:0}
+.use-combo-btn:hover{background:#e5577a}
+.combo-empty{text-align:center;padding:60px 24px;color:var(--ink3)}
+.combo-empty-icon{font-size:40px;margin-bottom:12px}
+.combo-empty-text{font-family:'Georgia','Times New Roman',serif;font-size:20px;font-style:italic;margin-bottom:8px}
+.combo-empty-sub{font-size:13px;line-height:1.6}
+
+@media(max-width:720px){
+  .today-view{grid-template-columns:1fr}
+  .picker-panel{height:52vh;border-right:none;border-bottom:1px solid var(--border)}
+  .results-panel{padding:20px}
+  .product-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="mode-tabs">
+    <button class="mode-tab active" onclick="switchView('shelf',this)">🗄 Shelf</button>
+    <button class="mode-tab" onclick="switchView('today',this)">✨ Today</button>
+    <button class="mode-tab" onclick="switchView('combo',this);buildCombo()">💫 Combos</button>
+  </div>
+</nav>
+
+<!-- SHELF VIEW -->
+<div class="view active" id="shelfView">
+  <div class="shelf-view">
+    <div class="view-heading">
+      <h2 style="color:var(--ink)">Active Shelf</h2>
+      <p>Products you currently have open and are using.</p>
+    </div>
+    <div class="product-grid" id="productGrid"></div>
+    <div class="view-heading" style="margin-top:32px">
+      <h2 style="color:var(--petal)">Unopened ✦</h2>
+      <p>Sealed and waiting. The Combos tab will suggest when to open these based on what you already use.</p>
+    </div>
+    <div class="product-grid" id="unopenedGrid"></div>
+  </div>
+</div>
+
+<!-- TODAY VIEW -->
+<div class="view" id="todayView">
+  <div class="today-view">
+    <div class="picker-panel">
+      <div class="picker-head">
+        <h3>What are you using today?</h3>
+        <div class="am-pm-row">
+          <button class="ap-btn active" onclick="setTime('AM',this)">☀️ Morning</button>
+          <button class="ap-btn" onclick="setTime('PM',this)">🌙 Evening</button>
+        </div>
+      </div>
+      <div class="picker-scroll" id="pickerList"></div>
+      <div class="picker-foot">
+        <div class="sel-count" id="selCount">Tap products to select</div>
+        <button class="check-btn" id="checkBtn" onclick="runCheck()" disabled>Check My Routine →</button>
+      </div>
+    </div>
+    <div class="results-panel" id="resultsPanel">
+      <div class="empty-state">
+        <div class="empty-bloom">🌸</div>
+        <h3>Ready to check</h3>
+        <p>Select the products you're using today, then tap Check.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- COMBO VIEW -->
+<div class="view" id="comboView">
+  <div class="combo-view">
+    <div class="view-heading">
+      <h2 style="color:var(--ink)">Best Combos from Your Shelf</h2>
+      <p>Ingredients that actively boost each other — curated from what you own. No conflicts, just synergy.</p>
+    </div>
+    <div id="comboContent"></div>
+  </div>
+</div>
+
+<!-- ADD MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="handleOverlayClick(event)">
+  <div class="modal">
+    <div class="modal-head">
+      <h3>Add to Shelf</h3>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-sub">Start typing — matching products appear instantly from the built-in database.</div>
+    <div class="modal-body">
+      <div class="field">
+        <label>Search Product Name</label>
+        <div class="search-wrap">
+          <input id="fSearch" type="text" placeholder="e.g. filling good, CE ferulic, toner…" oninput="onSearch()" autocomplete="off">
+          <button class="search-clear" id="searchClear" onclick="clearSearch()">✕</button>
+        </div>
+        <div class="suggestions" id="suggestions"></div>
+      </div>
+
+      <!-- Match result -->
+      <div class="match-card" id="matchCard">
+        <div class="mc-head"><span class="mc-icon" id="mcIcon"></span><span class="mc-title" id="mcTitle"></span></div>
+        <div class="mc-detail" id="mcDetail"></div>
+        <div class="mc-ings" id="mcIngs"></div>
+        <div class="mc-note" id="mcNote"></div>
+      </div>
+
+      <!-- Manual override fields — shown after match or when nothing found -->
+      <div id="manualFields" style="display:none;flex-direction:column;gap:14px">
+        <div class="field">
+          <label>Product Name</label>
+          <input id="fName" type="text" placeholder="Enter full product name">
+        </div>
+        <div class="field">
+          <label>Brand</label>
+          <input id="fBrand" type="text" placeholder="e.g. Farmacy">
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>When to use</label>
+            <select id="fTime"><option value="BOTH">AM + PM</option><option value="AM">Morning only</option><option value="PM">Evening only</option></select>
+          </div>
+          <div class="field">
+            <label>Routine step</label>
+            <select id="fStep">
+              <option value="1">1 — Cleanse</option><option value="2">2 — Tone / Essence</option>
+              <option value="3">3 — Serum</option><option value="4">4 — Eye Cream</option>
+              <option value="5">5 — Moisturise</option><option value="6">6 — Oil / Balm</option>
+              <option value="7">7 — SPF / Finish</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <label class="toggle-row">
+        <input type="checkbox" id="fFinish">
+        <div class="toggle-text"><strong>⭐ Finish First</strong><span>Use this up before opening a new one</span></div>
+      </label>
+      <label class="toggle-row">
+        <input type="checkbox" id="fWeekly">
+        <div class="toggle-text"><strong>📆 Use Sparingly</strong><span>Only 2–3× per week</span></div>
+      </label>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeModal()">Cancel</button>
+      <button class="btn-primary" onclick="saveProduct()">Add to Shelf</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+// PRODUCT DATABASE — fully offline, no API needed
+// ═══════════════════════════════════════════════════════════════
+const DB = [
+  // ── FARMACY ──
+  {id:'farmacy-filling-good',  name:'Filling Good Hyaluronic Serum', brand:'Farmacy', step:3, time:'BOTH', ings:['Hyaluronic Acid','Polyglutamic Acid','Niacinamide'], desc:'Plumping serum with three molecular weights of hyaluronic acid plus polyglutamic acid for intense, lasting hydration. Lightweight gel texture.', weekly:false},
+  {id:'farmacy-green-clean',   name:'Green Clean Cleansing Balm',    brand:'Farmacy', step:1, time:'PM',   ings:['Moringa Seed Extract','Papaya Enzyme'], desc:'Melt-away cleansing balm that dissolves makeup and SPF. Moringa extract and papaya enzyme gently break down impurities without stripping.', weekly:false},
+  {id:'farmacy-honey-potion',  name:'Honey Potion Renewing Antioxidant Hydration Mask', brand:'Farmacy', step:3, time:'BOTH', ings:['Propolis','Honey Extract','Echinacea'], desc:'Warming honey-based mask with antioxidant propolis and echinacea. Hydrates and soothes.', weekly:true},
+  {id:'farmacy-honeymoon-aha', name:'Honeymoon Glow AHA Resurfacing Night Serum', brand:'Farmacy', step:3, time:'PM', ings:['Glycolic Acid','Lactic Acid','AHA','Honey Extract'], desc:'Overnight resurfacing serum with glycolic and lactic acids. Smooths texture and brightens. Use 2–3× per week.', weekly:true},
+  {id:'farmacy-deep-sweep',    name:'Deep Sweep 2% BHA Pore Cleaning Toner', brand:'Farmacy', step:2, time:'BOTH', ings:['BHA','Salicylic Acid','Moringa Extract'], desc:'BHA toner that clears pores and controls oil. Salicylic acid 2% with soothing moringa.', weekly:false},
+  {id:'farmacy-very-greens',   name:'Very Greens Cleansing Concentrate', brand:'Farmacy', step:1, time:'BOTH', ings:['Kale Extract','Spinach Extract'], desc:'Gentle vegetable-based cleanser that removes impurities while maintaining the skin barrier.', weekly:false},
+  {id:'farmacy-sunshine-face', name:'Sunshine Face Sunscreen SPF 50',  brand:'Farmacy', step:7, time:'AM', ings:['SPF','Zinc Oxide'], desc:'Mineral SPF 50 with zinc oxide. Lightweight, reef-safe formula suitable for sensitive skin.', weekly:false},
+  {id:'farmacy-honey-grail',   name:'Honey Grail Ultra-Hydrating Face Oil', brand:'Farmacy', step:6, time:'BOTH', ings:['Rosehip Oil','Sea Buckthorn Oil','Honey Extract'], desc:'Lightweight face oil with rosehip, sea buckthorn, and honey extract. Delivers intense nourishment without greasiness. Apply as the last step before SPF in AM, or as a PM seal over moisturiser.', weekly:false},
+
+  // ── SKINCEUTICALS ──
+  {id:'sc-ce-ferulic',    name:'C E Ferulic Serum',              brand:'Skinceuticals', step:3, time:'AM',   ings:['Vitamin C','Vitamin E','Ferulic Acid'], desc:'Gold-standard antioxidant serum. 15% L-ascorbic acid with vitamin E and ferulic acid. Neutralises free radicals, brightens, and boosts collagen. AM only — can oxidise under UV.', weekly:false},
+  {id:'sc-phloretin',     name:'Phloretin CF Serum',             brand:'Skinceuticals', step:3, time:'AM',   ings:['Vitamin C','Phloretin','Ferulic Acid'], desc:'Antioxidant serum for combination skin. Phloretin + 10% vitamin C + ferulic acid. Lighter texture than C E Ferulic.', weekly:false},
+  {id:'sc-silymarin',     name:'Silymarin CF Serum',             brand:'Skinceuticals', step:3, time:'AM',   ings:['Vitamin C','Silymarin','Ferulic Acid','Salicylic Acid'], desc:'Antioxidant serum for oily/blemish-prone skin. Silymarin (milk thistle) plus vitamin C helps control sebum oxidation.', weekly:false},
+  {id:'sc-hydrating-b5',  name:'Hydrating B5 Gel',               brand:'Skinceuticals', step:5, time:'BOTH', ings:['Hyaluronic Acid','Vitamin B5'], desc:'Lightweight oil-free hydrating gel with hyaluronic acid and vitamin B5. Restores moisture and softness.', weekly:false},
+  {id:'sc-phyto',         name:'Phyto Corrective Gel',           brand:'Skinceuticals', step:3, time:'BOTH', ings:['Hyaluronic Acid','Cucumber Extract','Thyme Extract'], desc:'Soothing botanical gel for sensitised or post-procedure skin. Reduces redness and restores comfort.', weekly:false},
+  {id:'sc-triple-lipid',  name:'Triple Lipid Restore 2:4:2',     brand:'Skinceuticals', step:5, time:'PM',   ings:['Ceramides','Cholesterol','Fatty Acids'], desc:'Barrier-repair moisturiser with ceramides 2%, cholesterol 4%, fatty acids 2%. Replenishes skin\'s lipid layer. Best at night.', weekly:false},
+  {id:'sc-alh',           name:'A.G.E. Interrupter Advanced',    brand:'Skinceuticals', step:5, time:'BOTH', ings:['Proxylane','Blueberry Extract','Peptides'], desc:'Anti-ageing moisturiser targeting glycation and collagen degradation. Proxylane and peptides firm and smooth.', weekly:false},
+  {id:'sc-retinol-0-3',   name:'Retinol 0.3',                    brand:'Skinceuticals', step:3, time:'PM',   ings:['Retinol'], desc:'Entry-level retinol 0.3% in a moisturising base. Start 2–3× per week and build up tolerance.', weekly:true},
+  {id:'sc-retinol-0-5',   name:'Retinol 0.5',                    brand:'Skinceuticals', step:3, time:'PM',   ings:['Retinol'], desc:'Mid-strength retinol 0.5%. For skin acclimated to retinol. Promotes cell turnover and smooths fine lines.', weekly:true},
+  {id:'sc-retinol-1',     name:'Retinol 1.0',                    brand:'Skinceuticals', step:3, time:'PM',   ings:['Retinol'], desc:'High-strength retinol 1.0% for experienced retinol users. Significant anti-ageing and skin-renewing benefits.', weekly:true},
+  {id:'sc-metacell',      name:'Metacell Renewal B3',            brand:'Skinceuticals', step:5, time:'AM',   ings:['Niacinamide','Glycerin','Tri-peptide'], desc:'Lightweight moisturiser with niacinamide and peptides. Brightens and firms with daily use.', weekly:false},
+  {id:'sc-daily-moisture',name:'Daily Moisture',                 brand:'Skinceuticals', step:5, time:'BOTH', ings:['Hyaluronic Acid','Aloe Vera'], desc:'Lightweight daily moisturiser for normal to oily skin. Hydrates without heaviness.', weekly:false},
+  {id:'sc-sheer-mineral',  name:'Sheer Mineral UV Defense SPF 50',   brand:'Skinceuticals', step:7, time:'AM', ings:['SPF','Zinc Oxide'], desc:'100% mineral SPF 50 with zinc oxide. Lightweight, transparent finish suitable for sensitive skin.', weekly:false},
+  {id:'sc-physical-fusion',name:'Physical Fusion UV Defense SPF 50', brand:'Skinceuticals', step:7, time:'AM', ings:['SPF','Zinc Oxide','Titanium Dioxide'], desc:'Tinted mineral SPF 50 with zinc oxide and titanium dioxide. Universal translucent tint blurs imperfections and gives a natural glow finish. Suitable for all skin types including sensitive.', weekly:false},
+  {id:'sc-resveratrol-be', name:'Resveratrol B E',                    brand:'Skinceuticals', step:6, time:'PM', ings:['Resveratrol','Vitamin E','Baicalin'], desc:'Concentrated antioxidant night cream with 1% resveratrol, 0.5% alpha tocopherol, and baicalin. Neutralises oxidative stress overnight and supports skin recovery. Apply as the final PM step.', weekly:false},
+
+  // ── PAULA'S CHOICE ──
+  {id:'pc-bha-2',         name:'Skin Perfecting 2% BHA Liquid Exfoliant', brand:"Paula's Choice", step:3, time:'BOTH', ings:['BHA','Salicylic Acid','Green Tea Extract'], desc:'Cult-favourite exfoliant. 2% salicylic acid unclogs pores, smooths skin, and fades post-acne marks. Use after cleansing, before moisturiser.', weekly:false},
+  {id:'pc-aha-8',         name:'Skin Perfecting 8% AHA Gel Exfoliant',    brand:"Paula's Choice", step:3, time:'PM',   ings:['AHA','Glycolic Acid','Green Tea Extract'], desc:'Gentle AHA gel with glycolic acid. Exfoliates surface dead skin cells, improves texture and radiance. PM use recommended, use 2–3× per week.', weekly:true},
+  {id:'pc-c15',           name:'C15 Super Booster',                        brand:"Paula's Choice", step:3, time:'AM',   ings:['Vitamin C','Vitamin E','Ferulic Acid'], desc:'15% stable vitamin C booster with vitamin E and ferulic acid. Add to serum or moisturiser for antioxidant protection.', weekly:false},
+  {id:'pc-niacinamide-20',name:'20% Niacinamide Treatment',                brand:"Paula's Choice", step:3, time:'BOTH', ings:['Niacinamide'], desc:'High-potency 20% niacinamide treatment for enlarged pores and uneven skin tone. Use sparingly — start with 2–3× per week.', weekly:true},
+  {id:'pc-resist-barrier', name:'RESIST Barrier Repair Moisturizer',       brand:"Paula's Choice", step:5, time:'PM',   ings:['Ceramides','Niacinamide','Fatty Acids'], desc:'Rich barrier-repair moisturiser with ceramides, fatty acids, and niacinamide. Restores moisture and reduces sensitivity.', weekly:false},
+  {id:'pc-omega+',        name:'Omega+ Complex Moisturizer',                brand:"Paula's Choice", step:5, time:'BOTH', ings:['Ceramides','Fatty Acids','Niacinamide'], desc:'Rich moisturiser with sea buckthorn, rosehip, and ceramides. Repairs barrier and softens.', weekly:false},
+  {id:'pc-peptide-booster',name:'Peptide Booster',                         brand:"Paula's Choice", step:3, time:'BOTH', ings:['Peptides','Argireline'], desc:'Multi-peptide serum that firms, smooths, and supports collagen. Layer with other serums.', weekly:false},
+  {id:'pc-retinol-1',     name:'1% Retinol Booster',                       brand:"Paula's Choice", step:3, time:'PM',   ings:['Retinol'], desc:'High-strength 1% retinol with calming ingredients. For experienced retinol users only. 2–3× per week.', weekly:true},
+  {id:'pc-redness-relief',name:'Calm Redness Relief Toner',                brand:"Paula's Choice", step:2, time:'BOTH', ings:['Green Tea Extract','Allantoin'], desc:'Alcohol-free calming toner for sensitive, redness-prone skin. Reduces irritation and preps skin for the next step.', weekly:false},
+
+  // ── LA ROCHE-POSAY ──
+  {id:'lrp-anthelios-milk',name:'Anthelios UV Melt-in Milk SPF 50+', brand:'La Roche-Posay', step:7, time:'AM', ings:['SPF','Mexoryl SX','Tinosorb S'], desc:'Chemical SPF 50+ sunscreen. Very water-resistant, comfortable texture. Broad spectrum UVA/UVB protection.', weekly:false},
+  {id:'lrp-anthelios-mineral',name:'Anthelios Mineral Tinted SPF 50', brand:'La Roche-Posay', step:7, time:'AM', ings:['SPF','Zinc Oxide','Titanium Dioxide'], desc:'Tinted mineral SPF 50. Leaves a light coverage finish, suitable for sensitive skin.', weekly:false},
+  {id:'lrp-toleriane-double',name:'Toleriane Double Repair Moisturizer', brand:'La Roche-Posay', step:5, time:'BOTH', ings:['Ceramides','Niacinamide','Prebiotic Thermal Water'], desc:'Barrier-repair moisturiser with ceramides, niacinamide, and prebiotic thermal water. Restores skin balance within 1 hour.', weekly:false},
+  {id:'lrp-toleriane-ultra',name:'Toleriane Ultra Sensitive Fluid', brand:'La Roche-Posay', step:5, time:'BOTH', ings:['Neurosensine','Ceramides'], desc:'Ultra-minimal formula for highly reactive skin. Allergy-tested, paraben-free, fragrance-free.', weekly:false},
+  {id:'lrp-effaclar-duo',name:'Effaclar Duo+ Moisturiser', brand:'La Roche-Posay', step:5, time:'BOTH', ings:['Niacinamide','Salicylic Acid','LHA'], desc:'Moisturiser for acne-prone skin with niacinamide and micro-exfoliating LHA. Reduces breakouts and post-acne marks.', weekly:false},
+  {id:'lrp-cicaplast-b5',name:'Cicaplast Baume B5',     brand:'La Roche-Posay', step:6, time:'BOTH', ings:['Panthenol','Vitamin B5','Centella Asiatica'], desc:'Multi-purpose repairing balm. Soothes and repairs damaged, irritated or very dry skin. Can be used as a sleep mask.', weekly:false},
+  {id:'lrp-hyalu-b5',    name:'Hyalu B5 Serum',          brand:'La Roche-Posay', step:3, time:'BOTH', ings:['Hyaluronic Acid','Vitamin B5'], desc:'Plumping serum with two types of hyaluronic acid and vitamin B5. Restores volume and repairs skin.', weekly:false},
+  {id:'lrp-pigmentclar', name:'Pigmentclar Serum',        brand:'La Roche-Posay', step:3, time:'AM',   ings:['Ferulic Acid','LHA','Kojic Acid'], desc:'Brightening serum targeting dark spots and uneven skin tone. LHA gently exfoliates, ferulic acid protects.', weekly:false},
+  {id:'lrp-effaclar-h',  name:'Effaclar H Isobiome Moisturiser', brand:'La Roche-Posay', step:5, time:'BOTH', ings:['Ceramides','Niacinamide','Prebiotic'], desc:'Compensating moisturiser for skin dryness during acne treatment. Rebalances microbiome.', weekly:false},
+
+  // ── LANEIGE ──
+  {id:'lan-water-sleeping',name:'Water Sleeping Mask',    brand:'Laneige', step:6, time:'PM',   ings:['Hyaluronic Acid','Mineral Water','Apricot Extract'], desc:'Overnight water-barrier sleeping pack. Creates a moisture membrane while you sleep. Highly popular for glass skin effect.', weekly:false},
+  {id:'lan-water-bank-serum',name:'Water Bank Blue Hyaluronic Serum', brand:'Laneige', step:3, time:'BOTH', ings:['Hyaluronic Acid','Blue Hyaluronic Acid'], desc:'Deep-hydration serum with blue hyaluronic acid complex. Holds 1,000× its weight in water.', weekly:false},
+  {id:'lan-water-bank-cream',name:'Water Bank Blue Hyaluronic Cream', brand:'Laneige', step:5, time:'BOTH', ings:['Hyaluronic Acid','Ceramides'], desc:'Intensely hydrating cream with ceramide-enriched hyaluronic acid. For normal to dry skin.', weekly:false},
+  {id:'lan-lip-sleeping', name:'Lip Sleeping Mask',        brand:'Laneige', step:7, time:'PM',   ings:['Vitamin C','Berry Mix Complex'], desc:'Overnight lip treatment that repairs and hydrates lips. Not a face product but commonly used.', weekly:false},
+  {id:'lan-radian-c',     name:'Radian-C Cream',           brand:'Laneige', step:5, time:'AM',   ings:['Vitamin C','Niacinamide'], desc:'Brightening daily moisturiser with stable vitamin C and niacinamide. Brightens and evens complexion.', weekly:false},
+  {id:'lan-cream-skin-toner',name:'Cream Skin Toner & Moisturizer', brand:'Laneige', step:2, time:'BOTH', ings:['Hyaluronic Acid','Beta-glucan'], desc:'Hybrid toner-moisturiser that delivers instant hydration. Preps and plumps in one step.', weekly:false},
+
+  // ── KLAIRS ──
+  {id:'klairs-supple-toner', name:'Supple Preparation Facial Toner', brand:'Klairs', step:2, time:'BOTH', ings:['Hyaluronic Acid','Beta-glucan','Centella Asiatica'], desc:'Beloved hydrating toner with hyaluronic acid and beta-glucan. Softens and preps skin. Gentle enough for sensitive skin.', weekly:false},
+  {id:'klairs-vitamin-c',    name:'Freshly Juiced Vitamin C Serum',  brand:'Klairs', step:3, time:'AM',   ings:['Vitamin C','Ascorbic Acid'], desc:'5% pure vitamin C serum in a stabilised formula. Brightens and fades hyperpigmentation with minimal irritation.', weekly:false},
+  {id:'klairs-vitamin-drop', name:'Freshly Juiced Vitamin Drop',     brand:'Klairs', step:3, time:'AM',   ings:['Vitamin C'], desc:'Low-concentration vitamin C serum for sensitive skin. Brightening and antioxidant without irritation.', weekly:false},
+  {id:'klairs-midnight-blue',name:'Midnight Blue Calming Cream',     brand:'Klairs', step:5, time:'PM',   ings:['Guaiazulene','Centella Asiatica'], desc:'Iconic calming cream with guaiazulene (from chamomile) for irritated, sensitive or reactive skin. Deep blue colour.', weekly:false},
+  {id:'klairs-rich-moist',   name:'Rich Moist Soothing Serum',       brand:'Klairs', step:3, time:'BOTH', ings:['Hyaluronic Acid','Vitamin B5'], desc:'Rich soothing serum with hyaluronic acid and panthenol. Calms and deeply hydrates stressed skin.', weekly:false},
+  {id:'klairs-soft-airy',    name:'Soft Airy UV Essence SPF 50',     brand:'Klairs', step:7, time:'AM',   ings:['SPF'], desc:'Lightweight Korean SPF 50. Invisible finish with no white cast. Comfortable for daily wear.', weekly:false},
+
+  // ── REJURAN ──
+  {id:'rejuran-healer',  name:'Rejuran Healer Serum',            brand:'Rejuran', step:3, time:'BOTH', ings:['PDRN','Polynucleotide'], desc:'PDRN (salmon DNA) serum. Promotes skin self-repair, improves elasticity, and heals the skin barrier. K-beauty bestseller.', weekly:false},
+  {id:'rejuran-i',       name:'Rejuran I Eye Serum',             brand:'Rejuran', step:4, time:'BOTH', ings:['PDRN','Polynucleotide'], desc:'PDRN eye serum formulated specifically for the delicate under-eye area. Reduces fine lines and dark circles.', weekly:false},
+  {id:'rejuran-tone',    name:'Rejuran Tone Brightening Serum',  brand:'Rejuran', step:3, time:'AM',   ings:['PDRN','Niacinamide','Vitamin C'], desc:'Brightening PDRN serum with niacinamide and vitamin C. Evens skin tone and adds radiance.', weekly:false},
+  {id:'rejuran-soothing',name:'Rejuran Soothing Ampoule',        brand:'Rejuran', step:3, time:'BOTH', ings:['PDRN','Centella Asiatica'], desc:'Calming PDRN ampoule with centella asiatica. Soothes sensitive and inflamed skin.', weekly:false},
+
+  // ── WELLAGE ──
+  {id:'wellage-bio-collagen',name:'Real Collagen 80 Solution Ampoule', brand:'Wellage', step:3, time:'BOTH', ings:['Marine Collagen','Niacinamide'], desc:'High-concentration marine collagen ampoule with niacinamide. Firms and hydrates for a plump effect.', weekly:false},
+  {id:'wellage-real-ha',     name:'Real Hyaluronic 100 Ampoule',       brand:'Wellage', step:3, time:'BOTH', ings:['Hyaluronic Acid'], desc:'100% sodium hyaluronate ampoule. Multiple molecular weights for deep and surface hydration.', weekly:false},
+  {id:'wellage-bio-v',       name:'Bio V Lifting Serum',                brand:'Wellage', step:3, time:'BOTH', ings:['Peptides','Niacinamide','EGF'], desc:'Lifting serum with peptides and EGF. Firms and tightens while brightening.', weekly:false},
+  // ── WELLAGE (additional) ──
+  {id:'wellage-real-ha-blue', name:'Real Hyaluronic Blue 100 Ampoule', brand:'Wellage', step:3, time:'BOTH', ings:['Hyaluronic Acid','Blue Hyaluronic Acid','Panthenol'], desc:'High-concentration blue hyaluronic acid ampoule with multiple molecular weights for deep and surface hydration. Blue HA penetrates deeper than standard HA for lasting plumpness.', weekly:false},
+
+  // ── REJURAN (additional) ──
+  {id:'rejuran-turnover-ampoule', name:'Turnover Ampoule Double Effect', brand:'Rejuran', step:3, time:'BOTH', ings:['PDRN','Polynucleotide','Niacinamide','AHA'], desc:'Dual-action PDRN ampoule that combines skin repair with gentle cell turnover. PDRN heals and regenerates while the mild AHA complex encourages renewal. Use 2–3x per week.', weekly:true},
+  {id:'rejuran-turnover-cream',   name:'Turnover Cream',                brand:'Rejuran', step:5, time:'BOTH', ings:['PDRN','Polynucleotide','Ceramides','Peptides'], desc:'PDRN repair cream with ceramides and peptides. Supports barrier recovery and skin renewal overnight. Pairs well with the Turnover Ampoule.', weekly:false},
+
+  // ── SKINCEUTICALS (additional) ──
+  {id:'sc-blemish-age',      name:'Blemish + Age Defense Serum',       brand:'Skinceuticals', step:3, time:'BOTH', ings:['BHA','Salicylic Acid','AHA','Glycolic Acid','Dioic Acid'], desc:'Dual-acid serum combining 2% dioic acid, salicylic acid and glycolic acid for adult acne and ageing concerns simultaneously. Clears breakouts and refines texture. Use 2–3x per week.', weekly:true},
+  {id:'sc-discoloration',    name:'Discoloration Defense Serum',        brand:'Skinceuticals', step:3, time:'AM',   ings:['Tranexamic Acid','Kojic Acid','Niacinamide','HEPES'], desc:'Multi-acid brightening serum with tranexamic acid, kojic acid, and niacinamide. Targets stubborn discolouration, post-acne marks, and melasma. Clinical gold standard for hyperpigmentation.', weekly:false},
+  {id:'sc-age-interrupter-ultra', name:'A.G.E. Interrupter Ultra',      brand:'Skinceuticals', step:5, time:'BOTH', ings:['Proxylane','Peptides','Blueberry Extract','Phytosphingosine'], desc:'Advanced anti-glycation moisturiser. Higher concentration of Proxylane than the original with added peptides. Targets deep wrinkles, loss of firmness, and skin density. Rich cream texture.', weekly:false},
+
+  // ── IT COSMETICS ──
+  {id:'itc-confidence-sleep', name:'Confidence in Your Beauty Sleep Serum', brand:'IT Cosmetics', step:3, time:'PM', ings:['Retinol','Ceramides','Hyaluronic Acid','Peptides'], desc:'Overnight renewal serum with retinol, ceramides, peptides, and hyaluronic acid. Smooths fine lines and restores radiance while you sleep. Gentler retinol formulation suitable for sensitive skin.', weekly:false},
+
+  // ── ELIZABETH ARDEN ──
+  {id:'ea-ceramide-capsules', name:'Advanced Ceramide Capsules Daily Youth Restoring Serum', brand:'Elizabeth Arden', step:3, time:'BOTH', ings:['Ceramides','Hyaluronic Acid','Vitamin E'], desc:'Iconic single-use ceramide capsules. Each capsule delivers a concentrated dose of ceramides, hyaluronic acid, and vitamin E. Restores barrier, plumps, and smooths. Single-dose format keeps actives fresh.', weekly:false},
+
+  // ── LANCOME (additional) ──
+  {id:'lancome-absolue-creme', name:'Absolue Creme Fondante Soft Cream', brand:'Lancôme', step:5, time:'BOTH', ings:['Grand Rose Extracts','Peptides','Hyaluronic Acid'], desc:'Luxury regenerating soft cream with grand rose extracts and peptides. Melts into skin for a lightweight yet deeply nourishing finish. Restores density, radiance, and firmness for mature skin.', weekly:false},
+
+  // ── LA ROCHE-POSAY (additional) ──
+  {id:'lrp-cicaplast-serum', name:'Cicaplast B5 Serum', brand:'La Roche-Posay', step:3, time:'BOTH', ings:['Panthenol','Vitamin B5','Madecassoside','Niacinamide'], desc:'Concentrated repair serum with madecassoside, panthenol B5, and niacinamide. Accelerates skin recovery, soothes redness, and repairs barrier damage. Lightweight serum version of the iconic Cicaplast range.', weekly:false},
+
+  // ── FARMACY (additional) ──
+  {id:'farmacy-brighten-txa', name:'Brighten Up Vitamin C + 3% TXA Serum', brand:'Farmacy', step:3, time:'AM', ings:['Vitamin C','Tranexamic Acid','Niacinamide'], desc:'Brightening serum combining vitamin C, 3% tranexamic acid, and niacinamide. Triple-action formula targeting dullness, dark spots, and uneven skin tone. Lighter and more stable than pure L-ascorbic acid.', weekly:false},
+
+  // ── ESTEE LAUDER ──
+  {id:'el-micro-essence', name:'Micro Essence Skin Activating Treatment Lotion', brand:'Estée Lauder', step:2, time:'BOTH', ings:['Bifidus Ferment','Hyaluronic Acid','Saccharomyces Ferment'], desc:'Ferment-powered treatment lotion with bifidus and saccharomyces ferments. Activates skin\'s natural renewal and enhances absorption of subsequent skincare layers. A foundational step popular in Asia.', weekly:false},
+
+  // ── PAULA'S CHOICE (additional) ──
+  {id:'pc-retinaldehyde', name:'Pro Retinaldehyde Treatment 0.05%', brand:"Paula\'s Choice", step:3, time:'PM', ings:['Retinaldehyde','Retinoid','Peptides','Hyaluronic Acid'], desc:'Retinaldehyde (RAL) is the most potent over-the-counter retinoid — converts to retinoic acid faster than retinol with less irritation. 0.05% starter strength with peptides and HA for comfort. 2–3x per week to start.', weekly:true},
+  {id:'pc-vitc-glutathione', name:'25% Vitamin C + Glutathione Clinical Serum', brand:"Paula\'s Choice", step:3, time:'AM', ings:['Vitamin C','Ascorbic Acid','Glutathione','Ferulic Acid'], desc:'Ultra-high 25% L-ascorbic acid with glutathione and ferulic acid. Maximum-strength brightening and antioxidant serum. Glutathione further inhibits melanin production. Best for experienced Vitamin C users.', weekly:false},
+
+  // ── REJU-ALL ──
+  {id:'rejuall-lc-ceramide', name:'Advanced LC-Ceramide Barrier Cream', brand:'Reju-All', step:5, time:'BOTH', ings:['LC-Ceramide','Ceramides','Fatty Acids','Cholesterol'], desc:'Barrier-rebuilding cream featuring LC-Ceramide technology. Replenishes depleted ceramide levels with a lipid ratio close to the skin\'s natural composition. Ideal after actives or on recovery days.', weekly:false},
+
+  // ── INGREDIENTS (brand) ──
+  {id:'ingredients-calming-lotion', name:'Skin Barrier Calming Lotion', brand:'Ingredients', step:5, time:'BOTH', ings:['Ceramides','Centella Asiatica','Panthenol','Beta-glucan'], desc:'Minimalist barrier-calming lotion with ceramides, centella asiatica, and panthenol. Soothes reactive, compromised, or post-active skin. Lightweight enough to use morning and night.', weekly:false},
+
+
+  // ── LANCOME ──
+  {id:'lancome-genifique',  name:'Advanced Génifique Youth Activating Serum', brand:'Lancôme', step:3, time:'BOTH', ings:['Bifidus Extract','Vitamin C','Niacinamide'], desc:'Signature youth-activating serum with bifidus prebiotic. Strengthens skin barrier, adds radiance, and improves overall skin quality.', weekly:false},
+  {id:'lancome-renergie',   name:'Rénergie H.C.F. Triple Serum',              brand:'Lancôme', step:3, time:'BOTH', ings:['Hyaluronic Acid','Vitamin C','Ferulic Acid'], desc:'Triple-action anti-ageing serum. Hyaluronic acid for plumping, vitamin C for brightness, ferulic acid for antioxidant protection.', weekly:false},
+  {id:'lancome-absolue',    name:'Absolue Soft Cream',                         brand:'Lancôme', step:5, time:'BOTH', ings:['Rose Wax','Grand Rose Extracts','Peptides'], desc:'Luxury regenerating cream with rose extracts and peptides. Restores density and radiance for mature skin.', weekly:false},
+  {id:'lancome-clarifique', name:'Clarifique Dual Essence',                    brand:'Lancôme', step:2, time:'BOTH', ings:['Lactic Acid','Bifidus Extract'], desc:'Dual-phase brightening essence. Lactic acid gently exfoliates while bifidus strengthens barrier. Shake before use.', weekly:false},
+  {id:'lancome-uv-expert',  name:'UV Expert Aqua-Gel SPF 50+',                brand:'Lancôme', step:7, time:'AM',   ings:['SPF','Niacinamide'], desc:'Lightweight aqua-gel SPF 50+ with niacinamide. Comfortable for everyday wear under makeup.', weekly:false},
+
+  // ── CLARINS ──
+  {id:'clarins-double-serum',name:'Double Serum',              brand:'Clarins', step:3, time:'BOTH', ings:['Turmeric Extract','20 Plant Extracts','Hyaluronic Acid'], desc:'Iconic two-phase anti-ageing serum with 20 plant extracts including turmeric. Targets all visible signs of ageing.', weekly:false},
+  {id:'clarins-multi-active',name:'Multi-Active Serum',        brand:'Clarins', step:3, time:'BOTH', ings:['Teasel Extract','Organic Harungana'], desc:'Anti-fatigue serum for early signs of ageing. Smooths fine lines and restores glow.', weekly:false},
+  {id:'clarins-extra-firming',name:'Extra-Firming & Smoothing Treatment Essence', brand:'Clarins', step:2, time:'BOTH', ings:['Organic Harungana','Teasel Extract'], desc:'Firming essence that accelerates skin renewal. Apply after cleansing, before serum.', weekly:false},
+  {id:'clarins-moisture-rich',name:'Moisture-Rich Body Lotion', brand:'Clarins', step:5, time:'BOTH', ings:['Shea Butter','Aloe Vera'], desc:'Rich body moisturiser — not a face product, but commonly owned. Body use only.', weekly:false},
+  {id:'clarins-milky-boost', name:'Milky Boost Cushion SPF 50', brand:'Clarins', step:7, time:'AM', ings:['SPF'], desc:'Cushion SPF 50 foundation with light coverage. Skin-care actives in a makeup format.', weekly:false},
+
+  // ── THE ORDINARY ──
+  {id:'to-niacinamide',  name:'Niacinamide 10% + Zinc 1%',       brand:'The Ordinary', step:3, time:'BOTH', ings:['Niacinamide','Zinc'], desc:'High-strength niacinamide serum for pore appearance and sebum control. Zinc balances oiliness.', weekly:false},
+  {id:'to-ha-2',         name:'Hyaluronic Acid 2% + B5',          brand:'The Ordinary', step:3, time:'BOTH', ings:['Hyaluronic Acid','Vitamin B5'], desc:'Multi-weight hyaluronic acid serum with vitamin B5. Layering hyaluronic acid formula.', weekly:false},
+  {id:'to-azelaic',      name:'Azelaic Acid Suspension 10%',      brand:'The Ordinary', step:5, time:'BOTH', ings:['Azelaic Acid'], desc:'Brightening and anti-blemish treatment. Reduces hyperpigmentation and redness. Works on rosacea and acne marks.', weekly:false},
+  {id:'to-retinol-0-5',  name:'Retinol 0.5% in Squalane',         brand:'The Ordinary', step:3, time:'PM',   ings:['Retinol','Squalane'], desc:'Mid-strength retinol in a nourishing squalane base. 2–3× per week for beginners, can build up.', weekly:true},
+  {id:'to-granactive',   name:'Granactive Retinoid 2% Emulsion',  brand:'The Ordinary', step:3, time:'PM',   ings:['Retinoid','Hydroxypinacolone Retinoate'], desc:'Less irritating retinoid ester (HPR). 2% strength, good for those who find retinol too strong.', weekly:true},
+  {id:'to-aha-bha-peel', name:'AHA 30% + BHA 2% Peeling Solution',brand:'The Ordinary', step:3, time:'PM',   ings:['AHA','BHA','Glycolic Acid','Salicylic Acid'], desc:'High-strength peel with 30% AHA and 2% BHA. Use for 10 minutes MAX, 1× per week. Do not use on sensitive or compromised skin.', weekly:true},
+  {id:'to-alpha-arbutin',name:'Alpha Arbutin 2% + HA',            brand:'The Ordinary', step:3, time:'BOTH', ings:['Alpha Arbutin','Hyaluronic Acid'], desc:'Brightening serum targeting hyperpigmentation and dark spots. Alpha arbutin inhibits melanin production.', weekly:false},
+  {id:'to-peptide-copper',name:'Multi-Peptide + Copper Peptides 1%',brand:'The Ordinary', step:3, time:'BOTH',ings:['Peptides','Copper Peptides'], desc:'Peptide serum for anti-ageing and skin density. Copper peptides support collagen synthesis.', weekly:false},
+  {id:'to-squalane',     name:'100% Plant-Derived Squalane',      brand:'The Ordinary', step:6, time:'BOTH', ings:['Squalane'], desc:'Pure squalane oil. Excellent occlusive and skin-identical moisturiser. Can be layered on top of everything.', weekly:false},
+
+  // ── DRUNK ELEPHANT ──
+  {id:'de-c-firma',      name:'C-Firma Fresh Day Serum',         brand:'Drunk Elephant', step:3, time:'AM',   ings:['Vitamin C','Ferulic Acid','Pumpkin Ferment'], desc:'15% L-ascorbic acid vitamin C serum with ferulic acid. Comes in two vials mixed fresh. Brightening and firming.', weekly:false},
+  {id:'de-t-tango',      name:'T.L.C. Framboos Glycolic Night Serum', brand:'Drunk Elephant', step:3, time:'PM', ings:['Glycolic Acid','AHA','BHA','Salicylic Acid'], desc:'12% AHA/BHA night serum for resurfacing and brightening. Use 2–3× per week. Not for beginners.', weekly:true},
+  {id:'de-protini',      name:'Protini Polypeptide Cream',        brand:'Drunk Elephant', step:5, time:'BOTH', ings:['Peptides','Signal Peptides'], desc:'Protein and peptide moisturiser that improves skin firmness and texture. Lightweight and non-greasy.', weekly:false},
+  {id:'de-lala',         name:'Lala Retro Whipped Cream',         brand:'Drunk Elephant', step:5, time:'BOTH', ings:['Ceramides','Squalane','Marula Oil'], desc:'Rich moisturiser with ceramides and fermented oils. Restores barrier and deeply nourishes.', weekly:false},
+  {id:'de-umbra-tinte',  name:'Umbra Tinte Physical Daily Defense SPF 30', brand:'Drunk Elephant', step:7, time:'AM', ings:['SPF','Zinc Oxide'], desc:'Tinted mineral SPF 30 with zinc oxide. Leaves a light warmth on skin and doubles as a primer.', weekly:false},
+
+  // ── SK-II ──
+  {id:'skii-pitera',     name:'Facial Treatment Essence (Pitera Essence)', brand:'SK-II', step:2, time:'BOTH', ings:['Pitera','Galactomyces Ferment Filtrate'], desc:'Iconic Pitera essence with 90%+ galactomyces ferment filtrate. Brightens, refines pores, and improves skin clarity. A cornerstone of many Asian skincare routines.', weekly:false},
+  {id:'skii-genoptics',  name:'GenOptics Aura Essence',            brand:'SK-II', step:3, time:'AM',   ings:['Pitera','Niacinamide'], desc:'Brightening essence targeting dark spots and uneven skin tone. Pitera combined with brightening actives.', weekly:false},
+  {id:'skii-lxp',        name:'LXP Ultimate Perfecting Essence',   brand:'SK-II', step:2, time:'BOTH', ings:['Pitera','Galactomyces Ferment Filtrate'], desc:'Premium SK-II essence with elevated Pitera concentration. For advanced skin refinement.', weekly:false},
+  {id:'skii-whitening-spot',name:'Whitening Spot Specialist Serum', brand:'SK-II', step:3, time:'AM',  ings:['Niacinamide','Pitera'], desc:'Targeted brightening serum for dark spots. Niacinamide and Pitera work together to fade discolouration.', weekly:false},
+
+  // ── SULWHASOO ──
+  {id:'sul-first-care',  name:'First Care Activating Serum',      brand:'Sulwhasoo', step:2, time:'BOTH', ings:['Jaum Activator','Korean Medicinal Herbs'], desc:'Luxury Korean herbal essence used as the first step after cleansing. Enhances absorption of subsequent skincare layers.', weekly:false},
+  {id:'sul-concentrated',name:'Concentrated Ginseng Renewing Serum', brand:'Sulwhasoo', step:3, time:'BOTH', ings:['Ginseng','Ginsenoside'], desc:'Anti-ageing serum with Korean red ginseng. Improves elasticity, firmness, and vitality.', weekly:false},
+  {id:'sul-timetreasure',name:'Timetreasure Invigorating Serum',  brand:'Sulwhasoo', step:3, time:'BOTH', ings:['Honey','Royal Jelly Extract','Ginseng'], desc:'Luxury anti-ageing serum with Korean honey and ginseng. Revitalises and firms aged skin.', weekly:false},
+
+  // ── TATCHA ──
+  {id:'tatcha-water-cream',name:'The Water Cream',               brand:'Tatcha', step:5, time:'BOTH', ings:['Japanese Wild Rose','Hyaluronic Acid','Oat Extract'], desc:'Oil-free water gel moisturiser that bursts to release skin-beneficial actives. Leaves a pore-refined look.', weekly:false},
+  {id:'tatcha-dewy-skin', name:'The Dewy Skin Cream',             brand:'Tatcha', step:5, time:'BOTH', ings:['Hyaluronic Acid','Royal Jelly','Hadasei-3'], desc:'Rich moisturiser for dry and dehydrated skin. Gives the coveted dewy glass skin look.', weekly:false},
+  {id:'tatcha-essence',   name:'The Essence Plumping Skin Softener', brand:'Tatcha', step:2, time:'BOTH', ings:['Hyaluronic Acid','Hadasei-3','Lactic Acid'], desc:'Softening essence with hadasei complex and hyaluronic acid. Preps skin for better serum absorption.', weekly:false},
+  {id:'tatcha-rice-wash', name:'The Rice Wash Skin-Softening Cleanser', brand:'Tatcha', step:1, time:'BOTH', ings:['Japanese Rice Bran','Hyaluronic Acid'], desc:'Gentle foaming cleanser with Japanese rice bran. Softens skin without stripping.', weekly:false},
+  {id:'tatcha-luminance', name:'The Luminance Primer',            brand:'Tatcha', step:7, time:'AM',   ings:['Hyaluronic Acid','Silica'], desc:'Blurring primer that smooths pores and preps for makeup. Used as the last skincare/first makeup step.', weekly:false},
+
+  // ── CERAVE / CETAPHIL ──
+  {id:'cerave-moisturising',name:'Moisturising Cream',            brand:'CeraVe', step:5, time:'BOTH', ings:['Ceramides','Hyaluronic Acid','Niacinamide'], desc:'Dermatologist-recommended barrier repair cream with three essential ceramides. Rich but non-greasy. Great as a budget base moisturiser.', weekly:false},
+  {id:'cerave-foaming',     name:'Foaming Facial Cleanser',       brand:'CeraVe', step:1, time:'BOTH', ings:['Ceramides','Niacinamide'], desc:'Gel cleanser for normal to oily skin. Ceramides protect barrier while removing excess oil.', weekly:false},
+  {id:'cerave-hydrating',   name:'Hydrating Facial Cleanser',     brand:'CeraVe', step:1, time:'BOTH', ings:['Ceramides','Hyaluronic Acid'], desc:'Milky non-foaming cleanser for dry and sensitive skin. Does not disrupt the skin barrier.', weekly:false},
+  {id:'cetaphil-gentle',    name:'Gentle Skin Cleanser',          brand:'Cetaphil', step:1, time:'BOTH', ings:['Glycerin'], desc:'Classic gentle, non-foaming cleanser for sensitive skin. Fragrance-free and suitable for all skin types.', weekly:false},
+];
+
+// Search index — lower-cased for fast matching
+const DB_INDEX = DB.map(p => ({
+  ...p,
+  _search: `${p.name} ${p.brand} ${p.ings.join(' ')}`.toLowerCase()
+}));
+
+// ═══════════════════════════════════════════════════════════════
+// CONFLICT RULES (offline, rule-based)
+// ═══════════════════════════════════════════════════════════════
+const CONFLICTS = [
+  { a:['Vitamin C','Ascorbic Acid'], b:['Niacinamide'], level:'caution',
+    title:'Vitamin C + Niacinamide', fix:'Use Vitamin C in AM, Niacinamide in PM. Or leave 30 min between applications. At lower concentrations this is less of an issue, but the two can reduce each other\'s efficacy and cause flushing.' },
+  { a:['Retinol','Retinoid','Retinal'], b:['AHA','BHA','Glycolic Acid','Salicylic Acid','Lactic Acid'], level:'conflict',
+    title:'Retinol/Retinoid + Exfoliating Acid', fix:'This combination causes significant over-exfoliation. Use retinol on alternating nights from your AHA/BHA (skin cycling: exfoliate night 1, retinol night 2, recovery nights 3–4).' },
+  { a:['Retinol','Retinoid','Retinal'], b:['Vitamin C','Ascorbic Acid'], level:'conflict',
+    title:'Retinol + Vitamin C', fix:'These work at different pH levels and can destabilise each other. Use Vitamin C in AM and Retinol in PM only. Never layer them.' },
+  { a:['Retinol','Retinoid','Retinal'], b:['Benzoyl Peroxide'], level:'conflict',
+    title:'Retinol + Benzoyl Peroxide', fix:'Benzoyl peroxide oxidises and deactivates retinol. Use them on separate nights, or one in AM and one in PM.' },
+  { a:['AHA','Glycolic Acid','Lactic Acid'], b:['BHA','Salicylic Acid'], level:'caution',
+    title:'AHA + BHA together', fix:'Using AHA and BHA in the same routine is strong for most skin types and may cause irritation. For sensitive skin, alternate between them. For tolerant skin, layer with caution — BHA first, then AHA.' },
+  { a:['Vitamin C','Ascorbic Acid'], b:['Retinol','Retinoid','Retinal'], level:'conflict',
+    title:'Vitamin C + Retinol', fix:'Use Vitamin C in AM and Retinol in PM only. Applying together can cause irritation and both are less effective.' },
+  { a:['Copper Peptides'], b:['Vitamin C','Ascorbic Acid'], level:'caution',
+    title:'Copper Peptides + Vitamin C', fix:'Vitamin C can potentially oxidise copper peptides and reduce their effectiveness. Use on separate occasions — vitamin C in AM, copper peptides in PM.' },
+  { a:['Copper Peptides'], b:['AHA','BHA','Retinol','Retinoid'], level:'caution',
+    title:'Copper Peptides + Actives', fix:'Copper peptides are fragile and work best in a standalone step or with gentle products. Avoid layering with strong acids or retinoids at the same time.' },
+  { a:['Azelaic Acid'], b:['AHA','BHA','Glycolic Acid'], level:'caution',
+    title:'Azelaic Acid + AHA/BHA', fix:'Using multiple exfoliating acids together can over-sensitise skin. If using azelaic acid as treatment, limit other exfoliants to 2–3× per week on alternate days.' },
+];
+
+// ═══════════════════════════════════════════════════════════════
+// APP STATE
+// ═══════════════════════════════════════════════════════════════
+const STORAGE_KEY = 'myRitual_v5';
+const STORAGE_KEY_U = 'myRitual_v5_u';
+const STEP_LABELS = {1:'Cleanse',2:'Tone / Essence',3:'Serum',4:'Eye Cream',5:'Moisturise',6:'Oil / Balm',7:'SPF / Finish'};
+const STEP_NOTES  = {1:'Always first',2:'Preps & balances',3:'Active treatments',4:'Under-eye care',5:'Seals in hydration',6:'Occlusive layer',7:'Last step in AM'};
+const STEP_EMOJIS = {1:'🧼',2:'💧',3:'⚡',4:'👁️',5:'🛡️',6:'🌿',7:'☀️'};
+
+let shelf = [];
+let selected = new Set();
+let currentTime = 'AM';
+let pendingProduct = null;   // matched DB product or manual entry
+
+let unopened = [];
+function loadShelf(){
+  try{shelf=JSON.parse(localStorage.getItem(STORAGE_KEY))||[];}catch{shelf=[];}
+  try{unopened=JSON.parse(localStorage.getItem(STORAGE_KEY_U))||[];}catch{unopened=[];}
+}
+function saveShelf(){localStorage.setItem(STORAGE_KEY,JSON.stringify(shelf))}
+function saveAll(){localStorage.setItem(STORAGE_KEY,JSON.stringify(shelf));localStorage.setItem(STORAGE_KEY_U,JSON.stringify(unopened));}
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6)}
+
+// ── INIT ─────────────────────────────────────────────────────
+function init(){
+  loadShelf();
+  if(shelf.length===0 && unopened.length===0) seedData();
+  // date display removed
+    new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'});
+  renderShelf(); renderPicker();
+}
+
+function seedData(){
+  const activeIds = [
+    'wellage-real-ha-blue',
+    'rejuran-turnover-ampoule',
+    'sc-blemish-age',
+    'sc-discoloration',
+    'itc-confidence-sleep',
+    'ea-ceramide-capsules',
+    'rejuran-turnover-cream',
+    'pc-retinaldehyde',
+    'lrp-cicaplast-serum',
+    'lrp-cicaplast-b5',
+    'lancome-absolue-creme',
+    'farmacy-filling-good',
+    'sc-ce-ferulic',
+    'lrp-anthelios-milk',
+    'sc-triple-lipid',
+    'farmacy-green-clean',
+    'klairs-supple-toner',
+    'sc-resveratrol-be',
+    'sc-physical-fusion',
+    'farmacy-honey-grail',
+  ];
+  const unopenedIds = [
+    'sc-age-interrupter-ultra',
+    'el-micro-essence',
+    'farmacy-brighten-txa',
+    'rejuall-lc-ceramide',
+    'ingredients-calming-lotion',
+    'sc-phloretin',
+    'pc-vitc-glutathione',
+  ];
+  const finishFirst = new Set(['farmacy-filling-good','sc-triple-lipid','ea-ceramide-capsules','lrp-cicaplast-serum']);
+  const seen = new Set();
+  shelf = activeIds.map(id=>{
+    if(seen.has(id)) return null;
+    const p = DB.find(d=>d.id===id);
+    if(!p) return null;
+    seen.add(id);
+    return {id:uid(),dbId:p.id,name:p.name,brand:p.brand,time:p.time,step:p.step,ings:p.ings,desc:p.desc,finish:finishFirst.has(p.id),weekly:p.weekly,status:'active'};
+  }).filter(Boolean);
+  unopened = unopenedIds.map(id=>{
+    const p = DB.find(d=>d.id===id);
+    if(!p) return null;
+    return {id:uid(),dbId:p.id,name:p.name,brand:p.brand,time:p.time,step:p.step,ings:p.ings,desc:p.desc,finish:false,weekly:p.weekly,status:'unopened'};
+  }).filter(Boolean);
+  saveAll();
+}
+
+// ── SHELF RENDER ─────────────────────────────────────────────
+function renderShelf(){
+  const grid = document.getElementById('productGrid');
+  let html = shelf.map(p=>{
+    const tags=[];
+    if(p.time==='AM') tags.push(`<span class="tag t-am">☀ AM only</span>`);
+    else if(p.time==='PM') tags.push(`<span class="tag t-pm">🌙 PM only</span>`);
+    else tags.push(`<span class="tag t-both">AM + PM</span>`);
+    const isAct = isActive(p.ings);
+    if(isAct) tags.push(`<span class="tag t-active">Active</span>`);
+    if(p.weekly) tags.push(`<span class="tag t-weekly">2–3×/wk</span>`);
+    if(p.finish) tags.push(`<span class="tag t-finish">⭐ Finish first</span>`);
+    return `
+    <div class="shelf-card ${p.finish?'finish-first':''}">
+      <div class="card-top">
+        <div class="card-icon">${STEP_EMOJIS[p.step]||'🧴'}</div>
+        <div><div class="card-name">${p.name}</div><div class="card-brand">${p.brand} · ${STEP_LABELS[p.step]||'Treatment'}</div></div>
+      </div>
+      ${tags.length?`<div class="card-tags">${tags.join('')}</div>`:''}
+      ${p.ings&&p.ings.length?`<div class="card-ings">${p.ings.map(i=>`<span class="ing-pill ${isKeyActive(i)?'hi':''}">${i}</span>`).join('')}</div>`:''}
+      <div class="card-actions">
+        <button class="card-btn ${p.finish?'finish-on':''}" onclick="toggleFinish('${p.id}')">${p.finish?'⭐ Priority on':'☆ Finish first'}</button>
+        <button class="card-btn del" onclick="removeProduct('${p.id}')">Remove</button>
+      </div>
+    </div>`;
+  }).join('');
+  html += `<div class="add-card" onclick="openModal()"><div class="add-icon">＋</div><div class="add-label">Add a product</div><div class="add-sub">Type name — instantly matched</div></div>`;
+  grid.innerHTML = html;
+
+  // Render unopened grid
+  const ugrid = document.getElementById('unopenedGrid');
+  if(!ugrid) return;
+  if(!unopened.length){
+    ugrid.innerHTML=`<div style="grid-column:1/-1;padding:20px 0;font-size:13px;color:var(--ink3);font-style:italic">No unopened products yet — add them with the + button and mark as unopened.</div>`;
+    return;
+  }
+  ugrid.innerHTML = unopened.map(p=>{
+    const tags=[];
+    if(p.time==='AM') tags.push(`<span class="tag t-am">☀ AM only</span>`);
+    else if(p.time==='PM') tags.push(`<span class="tag t-pm">🌙 PM only</span>`);
+    else tags.push(`<span class="tag t-both">AM + PM</span>`);
+    if(isActive(p.ings)) tags.push(`<span class="tag t-active">Active</span>`);
+    if(p.weekly) tags.push(`<span class="tag t-weekly">2–3×/wk</span>`);
+    return `
+    <div class="shelf-card unopened">
+      <div class="unopened-badge">✦ Sealed</div>
+      <div class="card-top">
+        <div class="card-icon">${STEP_EMOJIS[p.step]||'🧴'}</div>
+        <div><div class="card-name">${p.name}</div><div class="card-brand">${p.brand} · ${STEP_LABELS[p.step]||'Treatment'}</div></div>
+      </div>
+      ${tags.length?`<div class="card-tags">${tags.join('')}</div>`:''}
+      ${p.ings&&p.ings.length?`<div class="card-ings">${p.ings.map(i=>`<span class="ing-pill ${isKeyActive(i)?'hi':''}">${i}</span>`).join('')}</div>`:''}
+      <div class="card-actions">
+        <button class="card-btn open-btn" onclick="openProduct('${p.id}')">Open this →</button>
+        <button class="card-btn del" onclick="removeUnopened('${p.id}')">Remove</button>
+      </div>
+    </div>`;
+  }).join('') + `<div class="add-card" onclick="openModal('unopened')"><div class="add-icon">＋</div><div class="add-label">Add unopened</div><div class="add-sub">Mark as sealed</div></div>`;
+}
+
+function isActive(ings){
+  const actives=['Vitamin C','Ascorbic Acid','Retinol','Retinoid','Retinal','AHA','BHA','Glycolic Acid','Salicylic Acid','Lactic Acid','Kojic Acid','Azelaic Acid','Alpha Arbutin','Benzoyl Peroxide'];
+  return ings&&ings.some(i=>actives.some(a=>i.toLowerCase().includes(a.toLowerCase())));
+}
+function isKeyActive(ing){
+  return['Vitamin C','Ascorbic Acid','Retinol','Retinoid','Retinal','AHA','BHA','Glycolic Acid','Salicylic Acid','Lactic Acid','Kojic Acid','Azelaic Acid','Niacinamide','Peptides','Copper Peptides','Alpha Arbutin','Ferulic Acid','PDRN','EGF','SPF'].some(a=>ing.toLowerCase().includes(a.toLowerCase()));
+}
+
+function openProduct(id){
+  // Move from unopened to active shelf
+  const idx = unopened.findIndex(p=>p.id===id);
+  if(idx===-1) return;
+  const p = unopened.splice(idx,1)[0];
+  p.status='active';
+  shelf.push(p);
+  saveAll(); renderShelf(); renderPicker();
+}
+function removeUnopened(id){
+  unopened=unopened.filter(p=>p.id!==id);
+  saveAll(); renderShelf();
+}
+function toggleFinish(id){const p=shelf.find(x=>x.id===id);if(p){p.finish=!p.finish;saveShelf();renderShelf();renderPicker()}}
+function removeProduct(id){shelf=shelf.filter(p=>p.id!==id);selected.delete(id);saveShelf();renderShelf();renderPicker();updateCheckBtn()}
+
+// ── PICKER ───────────────────────────────────────────────────
+function renderPicker(){
+  const visible=shelf.filter(p=>p.time==='BOTH'||p.time===currentTime);
+  const list=document.getElementById('pickerList');
+  if(!visible.length){list.innerHTML=`<div style="padding:24px 12px;text-align:center;color:var(--ink3);font-size:13px">No ${currentTime} products yet.<br>Add some in My Shelf.</div>`;return}
+  const byStep={};
+  visible.forEach(p=>{if(!byStep[p.step])byStep[p.step]=[];byStep[p.step].push(p)});
+  let html='';
+  Object.keys(byStep).sort((a,b)=>+a-+b).forEach(step=>{
+    html+=`<div class="picker-step-label">${STEP_LABELS[step]||'Step '+step}</div>`;
+    byStep[step].forEach(p=>{
+      const sel=selected.has(p.id);
+      html+=`<div class="pick-item ${sel?'selected':''} ${p.finish?'finish-first-item':''}" onclick="toggleSel('${p.id}')">
+        <span class="pick-emoji">${STEP_EMOJIS[p.step]||'🧴'}</span>
+        <div class="pick-info"><div class="pick-name">${p.name}</div><div class="pick-brand">${p.brand}${p.weekly?' · 2–3×/wk':''}</div></div>
+        <div class="pick-check">${sel?`<svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>`:''}</div>
+      </div>`;
+    });
+  });
+  list.innerHTML=html;
+}
+function toggleSel(id){if(selected.has(id))selected.delete(id);else selected.add(id);renderPicker();updateCheckBtn()}
+function updateCheckBtn(){const n=selected.size;document.getElementById('selCount').innerHTML=n===0?'Tap products to select':`<em>${n}</em> product${n>1?'s':''} selected`;document.getElementById('checkBtn').disabled=n===0}
+function setTime(t,btn){currentTime=t;selected.clear();document.querySelectorAll('.ap-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');updateCheckBtn();renderPicker();resetResults()}
+
+// ── VIEW SWITCH ───────────────────────────────────────────────
+function switchView(view,btn){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.querySelectorAll('.mode-tab').forEach(b=>b.classList.remove('active'));
+  document.getElementById(view+'View').classList.add('active');btn.classList.add('active');
+}
+
+// ── MODAL ─────────────────────────────────────────────────────
+function openModal(){
+  pendingProduct=null;
+  document.getElementById('fSearch').value='';
+  document.getElementById('searchClear').style.display='none';
+  document.getElementById('suggestions').className='suggestions';
+  document.getElementById('matchCard').className='match-card';
+  document.getElementById('manualFields').style.display='none';
+  document.getElementById('fFinish').checked=false;
+  document.getElementById('fWeekly').checked=false;
+  document.getElementById('modalOverlay').classList.add('open');
+  setTimeout(()=>document.getElementById('fSearch').focus(),100);
+}
+function closeModal(){document.getElementById('modalOverlay').classList.remove('open')}
+function handleOverlayClick(e){if(e.target===document.getElementById('modalOverlay'))closeModal()}
+function clearSearch(){document.getElementById('fSearch').value='';document.getElementById('searchClear').style.display='none';document.getElementById('suggestions').className='suggestions';document.getElementById('matchCard').className='match-card';document.getElementById('manualFields').style.display='none';pendingProduct=null;document.getElementById('fSearch').focus()}
+
+// ── SEARCH ────────────────────────────────────────────────────
+function onSearch(){
+  const q=document.getElementById('fSearch').value.trim().toLowerCase();
+  document.getElementById('searchClear').style.display=q?'block':'none';
+  if(q.length<2){document.getElementById('suggestions').className='suggestions';return}
+
+  const results=DB_INDEX.filter(p=>p._search.includes(q)).slice(0,6);
+  const sug=document.getElementById('suggestions');
+
+  if(!results.length){
+    sug.className='suggestions show';
+    sug.innerHTML=`<div class="sug-none">No match found — <a href="#" onclick="showManualEntry();return false" style="color:var(--bloom)">add manually</a></div>`;
+    return;
+  }
+  sug.className='suggestions show';
+  sug.innerHTML=results.map(p=>`
+    <div class="sug-item" onclick="selectProduct('${p.id}')">
+      <span class="sug-icon">${STEP_EMOJIS[p.step]||'🧴'}</span>
+      <div class="sug-info">
+        <div class="sug-name">${p.name}</div>
+        <div class="sug-brand">${p.brand} · ${STEP_LABELS[p.step]}</div>
+        ${p.ings.length?`<div class="sug-ings">${p.ings.slice(0,3).map(i=>`<span class="sug-ing">${i}</span>`).join('')}</div>`:''}
+      </div>
+    </div>`).join('');
+}
+
+function selectProduct(dbId){
+  const p=DB_INDEX.find(x=>x.id===dbId);
+  if(!p) return;
+  pendingProduct={...p};
+  document.getElementById('fSearch').value=p.name;
+  document.getElementById('searchClear').style.display='block';
+  document.getElementById('suggestions').className='suggestions';
+  document.getElementById('fWeekly').checked=p.weekly;
+
+  const mc=document.getElementById('matchCard');
+  mc.className='match-card show';
+  document.getElementById('mcIcon').textContent='✅';
+  document.getElementById('mcTitle').textContent=`${p.name} — ${p.brand}`;
+  document.getElementById('mcDetail').textContent=p.desc;
+  document.getElementById('mcIngs').innerHTML=
+    `<div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);width:100%;margin-bottom:4px">Key actives</div>`+
+    (p.ings.length
+      ? p.ings.map(i=>`<span class="mc-ing ${isKeyActive(i)?'hi':''}">${i}</span>`).join('')
+      : `<span style="font-size:11.5px;color:var(--ink3);font-style:italic">No key actives — this is a hydrating or barrier product</span>`);
+  document.getElementById('mcNote').textContent=`${p.time==='AM'?'Morning only':p.time==='PM'?'Evening only':'AM + PM'} · Step ${p.step}: ${STEP_LABELS[p.step]}${p.weekly?' · Use 2–3× per week':''}`;
+  document.getElementById('manualFields').style.display='none';
+}
+
+function showManualEntry(){
+  pendingProduct=null;
+  document.getElementById('suggestions').className='suggestions';
+  document.getElementById('matchCard').className='match-card manual show';
+  document.getElementById('mcIcon').textContent='✏️';
+  document.getElementById('mcTitle').textContent='Not in database — fill in below';
+  document.getElementById('mcDetail').textContent='Enter the details manually. It will still work for routine ordering — conflict checking uses ingredient tags.';
+  document.getElementById('mcIngs').innerHTML='';
+  document.getElementById('mcNote').textContent='';
+  document.getElementById('manualFields').style.display='flex';
+  document.getElementById('fName').value=document.getElementById('fSearch').value;
+}
+
+function saveProduct(){
+  if(pendingProduct){
+    // Check not already on shelf
+    if(shelf.some(p=>p.dbId===pendingProduct.id)){alert(`${pendingProduct.name} is already on your shelf.`);return}
+    shelf.push({id:uid(),dbId:pendingProduct.id,name:pendingProduct.name,brand:pendingProduct.brand,time:pendingProduct.time,step:pendingProduct.step,ings:pendingProduct.ings,desc:pendingProduct.desc,finish:document.getElementById('fFinish').checked,weekly:document.getElementById('fWeekly').checked});
+  } else {
+    const name=document.getElementById('fName').value.trim();
+    const brand=document.getElementById('fBrand').value.trim();
+    if(!name||!brand){alert('Please enter a product name and brand.');return}
+    shelf.push({id:uid(),dbId:null,name,brand,time:document.getElementById('fTime').value,step:parseInt(document.getElementById('fStep').value),ings:[],desc:'',finish:document.getElementById('fFinish').checked,weekly:document.getElementById('fWeekly').checked});
+  }
+  saveShelf();closeModal();renderShelf();renderPicker();
+}
+
+// ── CONFLICT CHECK (offline) ──────────────────────────────────
+function runCheck(){
+  const picks=shelf.filter(p=>selected.has(p.id));
+  if(!picks.length) return;
+  const sorted=[...picks].sort((a,b)=>a.step-b.step);
+  const allIngs=picks.flatMap(p=>p.ings||[]);
+
+  let conflicts=[], cautions=[];
+  const seen=new Set();
+  for(const rule of CONFLICTS){
+    const hasA=allIngs.some(i=>rule.a.some(a=>i.toLowerCase().includes(a.toLowerCase())));
+    const hasB=allIngs.some(i=>rule.b.some(b=>i.toLowerCase().includes(b.toLowerCase())));
+    if(hasA&&hasB&&!seen.has(rule.title)){
+      seen.add(rule.title);
+      if(rule.level==='conflict') conflicts.push(rule);
+      else cautions.push(rule);
+    }
+  }
+
+  // SPF check
+  const hasSPF=picks.some(p=>p.ings&&p.ings.some(i=>i.toLowerCase().includes('spf')||i.toLowerCase().includes('zinc oxide')||i.toLowerCase().includes('titanium dioxide')));
+  const missingSPF=currentTime==='AM'&&!hasSPF;
+
+  // Weekly overload
+  const weeklyPicks=picks.filter(p=>p.weekly);
+  const weeklyOverload=weeklyPicks.length>1;
+
+  // Build results
+  let overallPill, overallClass;
+  if(conflicts.length){ overallPill='⛔ Conflict Detected'; overallClass='sp-bad'; }
+  else if(cautions.length||missingSPF||weeklyOverload){ overallPill='⚠️ Use With Caution'; overallClass='sp-warn'; }
+  else { overallPill='✅ All Clear'; overallClass='sp-ok'; }
+
+  let bodyHTML='';
+
+  conflicts.forEach((c,i)=>{
+    bodyHTML+=`<div class="conflict-block" style="animation-delay:${i*.05}s">
+      <h4>⛔ ${c.title}</h4>
+      <p><strong>Fix:</strong> ${c.fix}</p>
+    </div>`;
+  });
+  cautions.forEach((c,i)=>{
+    bodyHTML+=`<div class="caution-block" style="animation-delay:${(conflicts.length+i)*.05}s">
+      <h4>⚠️ ${c.title}</h4>
+      <p><strong>Tip:</strong> ${c.fix}</p>
+    </div>`;
+  });
+  if(missingSPF){
+    bodyHTML+=`<div class="caution-block">
+      <h4>⚠️ No SPF in your morning routine</h4>
+      <p>Sunscreen is the most important step in any AM routine — especially when using actives like Vitamin C or AHAs which increase photosensitivity. Add your SPF as the very last step.</p>
+    </div>`;
+  }
+  if(weeklyOverload){
+    bodyHTML+=`<div class="caution-block">
+      <h4>⚠️ Multiple weekly-use products selected</h4>
+      <p><strong>${weeklyPicks.map(p=>p.name).join(' + ')}</strong> are both recommended for 2–3× per week. Using them on the same day increases irritation risk. Consider alternating — try skin cycling.</p>
+    </div>`;
+  }
+  if(!conflicts.length&&!cautions.length&&!missingSPF&&!weeklyOverload){
+    bodyHTML+=`<div class="ok-block">
+      <h4>✅ Your routine looks great</h4>
+      <p>No ingredient conflicts detected. Follow the application order below and your skin will thank you.</p>
+    </div>`;
+  }
+
+  // Smart tip
+  const tip = buildTip(picks, allIngs);
+  if(tip) bodyHTML+=`<div class="tip-block"><h4>💡 Smart tip</h4><p>${tip}</p></div>`;
+
+  const orderRows=sorted.map((p,i)=>`
+    <div class="order-row" style="animation-delay:${i*.07}s">
+      <div class="or-num sn-${Math.min(p.step,7)}">${i+1}</div>
+      <div class="or-body"><div class="or-name">${p.name}</div><div class="or-sub">${STEP_NOTES[p.step]||''} · ${p.brand}</div></div>
+      <div class="or-badge">${STEP_LABELS[p.step]||'Treatment'}</div>
+    </div>`).join('');
+
+  const finishPicks=picks.filter(p=>p.finish);
+  const finishHTML=finishPicks.length?`
+    <div class="finish-strip">
+      <div class="strip-head"><span>🏁</span><h4>Finish-First Reminder</h4></div>
+      <div class="finish-items">
+        ${finishPicks.map((p,i)=>{const pct=Math.max(8,22-i*6);return`<div class="finish-item">
+          <div class="fi-left">${STEP_EMOJIS[p.step]||'🧴'} ${p.name}</div>
+          <div class="fi-bar-wrap"><div class="fi-uses">~${Math.round(pct*.5)} uses left</div><div class="fi-bar"><div class="fi-fill" style="width:${pct}%"></div></div></div>
+        </div>`}).join('')}
+      </div>
+    </div>`:'';
+
+  document.getElementById('resultsPanel').innerHTML=`
+    <div class="result-card">
+      <div class="rc-head"><h3>Routine Check — ${currentTime}</h3><span class="status-pill ${overallClass}">${overallPill}</span></div>
+      <div class="rc-body">${bodyHTML}</div>
+    </div>
+    <div class="result-card" style="animation-delay:.1s">
+      <div class="rc-head"><h3>Apply in This Order</h3></div>
+      <div class="order-list">${orderRows}</div>
+    </div>
+    ${finishHTML}`;
+}
+
+function buildTip(picks, allIngs){
+  const hasVitC=allIngs.some(i=>/vitamin c|ascorbic/i.test(i));
+  const hasSPF=allIngs.some(i=>/spf|zinc oxide/i.test(i));
+  const hasRetinol=allIngs.some(i=>/retinol|retinoid|retinal/i.test(i));
+  const hasHA=allIngs.some(i=>/hyaluronic/i.test(i));
+  const hasAHA=allIngs.some(i=>/aha|glycolic|lactic/i.test(i));
+  const hasCeramide=allIngs.some(i=>/ceramide/i.test(i));
+  const hasPDRN=allIngs.some(i=>/pdrn|polynucleotide/i.test(i));
+
+  if(hasVitC&&hasSPF&&currentTime==='AM') return 'Great AM combo — Vitamin C boosts your SPF\'s protective effect by neutralising free radicals that UV filters miss. Apply Vitamin C serum first, let it absorb, then SPF last.';
+  if(hasRetinol&&hasHA) return 'Apply your hyaluronic acid serum before your retinol to form a hydrating buffer. This reduces the flaking and tightness that can come with retinol use.';
+  if(hasAHA&&hasCeramide) return 'After AHA exfoliation, your ceramide moisturiser works harder — freshly exfoliated skin absorbs barrier-repair ingredients more effectively. Give the AHA 5–10 min before applying.';
+  if(hasPDRN) return 'PDRN (salmon DNA) works best on clean, slightly damp skin. Apply your Rejuran serum immediately after toning while skin is still moist for best absorption.';
+  if(picks.length>=4) return `With ${picks.length} products, let each layer absorb before the next — especially actives. A 30–60 second wait between steps makes a real difference in efficacy.`;
+  return '';
+}
+
+// ── SYNERGY RULES ────────────────────────────────────────────
+const SYNERGY = [
+  { id:'vitc-spf', label:'Antioxidant Shield', emoji:'☀️', scoreClass:'score-great', time:'AM',
+    needs:[['Vitamin C','Ascorbic Acid','Ferulic Acid'],['SPF','Zinc Oxide','Titanium Dioxide']],
+    why:'Vitamin C neutralises the free radicals that SPF filters miss, extending your sun protection significantly. The gold-standard AM duo.',
+    tip:'Apply Vitamin C serum first, let it absorb fully (2–3 min), then SPF as the absolute last step.' },
+  { id:'vitc-ferulic', label:'Vitamin C Amplifier', emoji:'⚡', scoreClass:'score-synergy', time:'AM',
+    needs:[['Vitamin C','Ascorbic Acid'],['Ferulic Acid']],
+    why:'Ferulic acid stabilises Vitamin C, doubles its antioxidant potency, and extends its shelf life on skin. They were made for each other.',
+    tip:'Already combined in CE Ferulic — if using separately, apply ferulic acid first, then Vitamin C on top.' },
+  { id:'retinol-ha', label:'Retinol Buffer', emoji:'🌙', scoreClass:'score-good', time:'PM',
+    needs:[['Retinol','Retinoid','Retinal','Bakuchiol'],['Hyaluronic Acid']],
+    why:'Hyaluronic acid cushions skin against retinol drying and flaking without reducing its efficacy.',
+    tip:'Apply HA serum on slightly damp skin first, let it absorb, then retinol on top. This dramatically reduces irritation.' },
+  { id:'retinol-ceramide', label:'Barrier Protection', emoji:'🛡️', scoreClass:'score-great', time:'PM',
+    needs:[['Retinol','Retinoid','Retinal'],['Ceramides']],
+    why:'Retinol accelerates cell turnover and can compromise the skin barrier short-term. Ceramides rebuild it simultaneously.',
+    tip:'Apply retinol serum first, wait 10–15 min, then seal with your ceramide moisturiser.' },
+  { id:'niacinamide-ha', label:'Hydration Lock', emoji:'💧', scoreClass:'score-good', time:'BOTH',
+    needs:[['Niacinamide'],['Hyaluronic Acid']],
+    why:'Niacinamide strengthens the skin barrier so hyaluronic acid stays locked in longer, rather than evaporating off the skin surface.',
+    tip:'Apply HA first on damp skin, then niacinamide on top to seal it in.' },
+  { id:'peptide-ha', label:'Plump & Firm', emoji:'✨', scoreClass:'score-good', time:'BOTH',
+    needs:[['Peptides','Copper Peptides'],['Hyaluronic Acid']],
+    why:'Peptides signal collagen production while hyaluronic acid instantly plumps — different timelines, complementary results.',
+    tip:'Layer HA serum first for immediate plumping, then peptide serum on top for collagen signalling.' },
+  { id:'vitc-niacinamide', label:'Brightening Power Pair', emoji:'🌟', scoreClass:'score-synergy', time:'AM',
+    needs:[['Vitamin C','Ascorbic Acid'],['Niacinamide']],
+    why:'Vitamin C and Niacinamide tackle hyperpigmentation from two different angles — one inhibits melanin transfer, the other brightens existing spots.',
+    tip:'Apply Vitamin C first, wait 20–30 min, then Niacinamide. Or use Vitamin C AM only, Niacinamide AM+PM.' },
+  { id:'aha-ceramide', label:'Exfoliate & Repair', emoji:'🔄', scoreClass:'score-good', time:'PM',
+    needs:[['AHA','Glycolic Acid','Lactic Acid'],['Ceramides']],
+    why:'AHAs exfoliate dead cells so ceramides can penetrate deeper and rebuild the barrier more effectively.',
+    tip:'Apply AHA, wait 5–10 min, then ceramide moisturiser. Never apply ceramides before AHA.' },
+  { id:'pdrn-ha', label:'Repair & Hydrate', emoji:'🐟', scoreClass:'score-great', time:'BOTH',
+    needs:[['PDRN','Polynucleotide'],['Hyaluronic Acid']],
+    why:'PDRN triggers cellular repair while hyaluronic acid provides the moisture scaffolding skin needs to heal.',
+    tip:'Apply PDRN serum immediately after toning on damp skin, then layer hyaluronic acid on top.' },
+  { id:'resveratrol-vite', label:'Antioxidant Overnight', emoji:'🌙', scoreClass:'score-synergy', time:'PM',
+    needs:[['Resveratrol'],['Vitamin E']],
+    why:'Resveratrol and Vitamin E combat oxidative stress through different pathways — broader overnight protection than either alone.',
+    tip:'Already combined in Skinceuticals Resveratrol B E. Apply as your final PM step over moisturiser.' },
+  { id:'niacinamide-ceramide', label:'Barrier Builder', emoji:'🧱', scoreClass:'score-great', time:'BOTH',
+    needs:[['Niacinamide'],['Ceramides']],
+    why:'Niacinamide stimulates your skin\'s own ceramide production, and topical ceramides add directly to the barrier.',
+    tip:'Use niacinamide serum first, then your ceramide moisturiser. Ideal on recovery days.' },
+  { id:'rosehip-retinoid', label:'Natural Retinol Support', emoji:'🌹', scoreClass:'score-good', time:'PM',
+    needs:[['Rosehip Oil'],['Retinol','Retinoid','Retinal']],
+    why:'Rosehip oil contains natural retinoic acid precursors that complement retinoids while its fatty acids soothe irritation.',
+    tip:'Apply retinol first, wait 10 min, then seal with Honey Grail face oil to prevent water loss.' },
+  { id:'vitc-peptide', label:'Collagen Supercharge', emoji:'💪', scoreClass:'score-synergy', time:'AM',
+    needs:[['Vitamin C','Ascorbic Acid'],['Peptides']],
+    why:'Vitamin C is the essential cofactor for collagen synthesis. Peptides signal cells to produce more. Together they\'re more effective for firmness.',
+    tip:'Apply Vitamin C serum first, then peptide serum. Give each 1–2 min between layers.' },
+  { id:'txa-niacinamide', label:'Dark Spot Duo', emoji:'🌟', scoreClass:'score-synergy', time:'AM',
+    needs:[['Tranexamic Acid'],['Niacinamide']],
+    why:'Tranexamic acid blocks melanin synthesis at the source while niacinamide inhibits melanin transfer to skin cells — two different pathways attacking hyperpigmentation simultaneously.',
+    tip:'Apply TXA serum first, let it absorb, then niacinamide. Both are gentle enough to layer daily for consistent brightening results.' },
+  { id:'vitc-glutathione', label:'Maximum Brightening', emoji:'💎', scoreClass:'score-great', time:'AM',
+    needs:[['Vitamin C','Ascorbic Acid'],['Glutathione']],
+    why:'Glutathione inhibits melanin production while Vitamin C brightens existing pigmentation and provides antioxidant protection. Together they\'re the most comprehensive brightening combination available OTC.',
+    tip:'Already combined in the Paula\'s Choice 25% Vitamin C + Glutathione serum. If using separately, Vitamin C first then glutathione serum on top.' },
+  { id:'retinaldehyde-ha', label:'Retinaldehyde Comfort', emoji:'🌙', scoreClass:'score-good', time:'PM',
+    needs:[['Retinaldehyde'],['Hyaluronic Acid']],
+    why:'Retinaldehyde is more potent than retinol and converts faster — pairing with HA is essential to buffer dryness and maintain comfort as your skin adapts.',
+    tip:'Apply HA serum on damp skin, wait 30 seconds, then retinaldehyde treatment on top. This sandwich method lets you use stronger retinoids with less irritation.' },
+  { id:'ceramide-capsules-ha', label:'Barrier Intensive', emoji:'🧱', scoreClass:'score-great', time:'BOTH',
+    needs:[['Ceramides'],['Hyaluronic Acid']],
+    why:'Ceramides seal the lipid barrier to prevent moisture loss, while hyaluronic acid fills the skin with water — one holds the structure, the other fills it.',
+    tip:'Layer HA serum first on damp skin, let it absorb, then apply your ceramide product on top to lock all that hydration in.' },
+
+];
+
+function buildCombo(){
+  if(shelf.length < 2 && unopened.length === 0){
+    document.getElementById('comboContent').innerHTML=`
+      <div class="combo-empty"><div class="combo-empty-icon">🌱</div>
+      <div class="combo-empty-text">Add more products first</div>
+      <div class="combo-empty-sub">You need at least 2 products to find synergies.</div></div>`;
+    return;
+  }
+
+  // ── Find combos from ACTIVE shelf only ──
+  function findCombos(pool){
+    const found=[];
+    for(const rule of SYNERGY){
+      const matchedGroups=rule.needs.map(group=>
+        pool.filter(p=>p.ings&&p.ings.some(ing=>group.some(kw=>ing.toLowerCase().includes(kw.toLowerCase()))))
+      );
+      if(matchedGroups.some(g=>g.length===0)) continue;
+      const picks=matchedGroups.map(g=>{
+        const preferred=g.find(p=>p.time===rule.time||p.time==='BOTH');
+        return preferred||g[0];
+      });
+      const uniquePicks=[...new Map(picks.map(p=>[p.id,p])).values()];
+      if(uniquePicks.length<2) continue;
+      const comboIngs=uniquePicks.flatMap(p=>p.ings||[]);
+      let hasConflict=false;
+      for(const cr of CONFLICTS){
+        const hasA=comboIngs.some(i=>cr.a.some(a=>i.toLowerCase().includes(a.toLowerCase())));
+        const hasB=comboIngs.some(i=>cr.b.some(b=>i.toLowerCase().includes(b.toLowerCase())));
+        if(hasA&&hasB&&cr.level==='conflict'){hasConflict=true;break;}
+      }
+      if(!hasConflict) found.push({rule,picks:uniquePicks});
+    }
+    return found;
+  }
+
+  // ── Find upgrade combos: one active + one unopened ──
+  function findUpgrades(){
+    const upgrades=[];
+    for(const u of unopened){
+      for(const rule of SYNERGY){
+        // Check if this unopened product satisfies at least one need group
+        const satisfiesGroup = rule.needs.findIndex(group=>
+          u.ings&&u.ings.some(ing=>group.some(kw=>ing.toLowerCase().includes(kw.toLowerCase())))
+        );
+        if(satisfiesGroup===-1) continue;
+
+        // Check remaining groups are satisfied by active shelf
+        const otherGroups = rule.needs.filter((_,i)=>i!==satisfiesGroup);
+        const activeMatches = otherGroups.map(group=>
+          shelf.filter(p=>p.ings&&p.ings.some(ing=>group.some(kw=>ing.toLowerCase().includes(kw.toLowerCase()))))
+        );
+        if(activeMatches.some(g=>g.length===0)) continue;
+
+        const activePicks = activeMatches.map(g=>{
+          const preferred=g.find(p=>p.time===rule.time||p.time==='BOTH');
+          return preferred||g[0];
+        });
+
+        // No duplicates
+        const allPicks=[u,...activePicks];
+        const uniquePicks=[...new Map(allPicks.map(p=>[p.id,p])).values()];
+        if(uniquePicks.length<2) continue;
+
+        // Clash check — does opening this clash with anything active?
+        const clashes=[];
+        for(const cr of CONFLICTS){
+          const uHasA=u.ings&&u.ings.some(i=>cr.a.some(a=>i.toLowerCase().includes(a.toLowerCase())));
+          const uHasB=u.ings&&u.ings.some(i=>cr.b.some(b=>i.toLowerCase().includes(b.toLowerCase())));
+          if(uHasA||uHasB){
+            const allActiveIngs=shelf.flatMap(p=>p.ings||[]);
+            const clashA=uHasA&&allActiveIngs.some(i=>cr.b.some(b=>i.toLowerCase().includes(b.toLowerCase())));
+            const clashB=uHasB&&allActiveIngs.some(i=>cr.a.some(a=>i.toLowerCase().includes(a.toLowerCase())));
+            if(clashA||clashB) clashes.push(cr);
+          }
+        }
+
+        // What does it complement/replace on active shelf?
+        const complements = shelf.filter(p=>
+          p.ings&&p.ings.some(ing=>
+            rule.needs[satisfiesGroup].some(kw=>ing.toLowerCase().includes(kw.toLowerCase()))
+          )
+        );
+
+        upgrades.push({rule, unopenedProduct:u, activePicks, clashes, complements});
+      }
+    }
+    // Deduplicate by unopened product + rule
+    const seen=new Set();
+    return upgrades.filter(u=>{
+      const key=u.unopenedProduct.id+u.rule.id;
+      if(seen.has(key)) return false;
+      seen.add(key); return true;
+    });
+  }
+
+  const activeCombos = findCombos(shelf);
+  const upgrades = findUpgrades();
+
+  const amActive=activeCombos.filter(c=>c.rule.time==='AM');
+  const pmActive=activeCombos.filter(c=>c.rule.time==='PM');
+  const bothActive=activeCombos.filter(c=>c.rule.time==='BOTH');
+
+  function renderComboCard({rule,picks}){
+    const rows=picks.map((p,i)=>{
+      const relIngs=(p.ings||[]).filter(ing=>rule.needs.some(g=>g.some(kw=>ing.toLowerCase().includes(kw.toLowerCase()))));
+      return `<div class="combo-product-row">
+        <div class="cp-num">${i+1}</div>
+        <div class="cp-info">
+          <div class="cp-name">${p.name}</div>
+          <div class="cp-brand">${p.brand}</div>
+          ${relIngs.length?`<div class="cp-ings">${relIngs.map(i=>`<span class="cp-ing">${i}</span>`).join('')}</div>`:''}
+        </div>
+      </div>`;
+    }).join('');
+    const ids=picks.map(p=>p.id).join(',');
+    const timeLabel=rule.time==='AM'?'AM':rule.time==='PM'?'PM':'AM';
+    return `<div class="combo-card">
+      <div class="combo-card-head">
+        <div class="combo-score ${rule.scoreClass}">${rule.emoji}</div>
+        <div class="combo-head-text"><div class="combo-name">${rule.label}</div><div class="combo-why">${rule.why}</div></div>
+      </div>
+      <div class="combo-products">${rows}</div>
+      <div class="combo-footer">
+        <div class="combo-footer-text">💡 ${rule.tip}</div>
+        <button class="use-combo-btn" onclick="useCombo('${timeLabel}','${ids}')">Use today →</button>
+      </div>
+    </div>`;
+  }
+
+  function renderUpgradeCard({rule, unopenedProduct:u, activePicks, clashes, complements}){
+    const activeRows=activePicks.map((p,i)=>{
+      const relIngs=(p.ings||[]).filter(ing=>rule.needs.some(g=>g.some(kw=>ing.toLowerCase().includes(kw.toLowerCase()))));
+      return `<div class="combo-product-row">
+        <div class="cp-num" style="background:var(--leaf-l);color:#3A6828">${i+1}</div>
+        <div class="cp-info">
+          <div class="cp-name">${p.name} <span style="font-size:9.5px;color:var(--safe);font-weight:700">✓ ACTIVE</span></div>
+          <div class="cp-brand">${p.brand}</div>
+          ${relIngs.length?`<div class="cp-ings">${relIngs.map(i=>`<span class="cp-ing">${i}</span>`).join('')}</div>`:''}
+        </div>
+      </div>`;
+    }).join('');
+
+    const relIngsU=(u.ings||[]).filter(ing=>rule.needs.some(g=>g.some(kw=>ing.toLowerCase().includes(kw.toLowerCase()))));
+    const unopenedRow=`<div class="combo-product-row">
+      <div class="cp-num" style="background:var(--petal-l);color:#8B4513">✦</div>
+      <div class="cp-info">
+        <div class="cp-name">${u.name} <span style="font-size:9.5px;color:#8B4513;font-weight:700">SEALED</span></div>
+        <div class="cp-brand">${u.brand}</div>
+        ${relIngsU.length?`<div class="cp-ings">${relIngsU.map(i=>`<span class="cp-ing" style="background:var(--petal-l);color:#8B4513">${i}</span>`).join('')}</div>`:''}
+      </div>
+    </div>`;
+
+    const complementText = complements.length
+      ? `<div class="upgrade-row"><span class="upgrade-icon">🔄</span><div class="upgrade-text"><strong>Complements:</strong> ${complements.map(p=>p.name).join(', ')}</div></div>`
+      : '';
+
+    const clashHTML = clashes.length
+      ? `<div class="upgrade-clash">⚠️ <div><strong>Clash warning:</strong> Opening this may conflict with ${clashes.map(c=>c.title).join(', ')} in your active shelf. Consider finishing or pausing those first.</div></div>`
+      : '';
+
+    return `<div class="combo-card upgrade">
+      <div class="upgrade-banner">✦ UNLOCK WITH SEALED PRODUCT</div>
+      <div class="combo-card-head">
+        <div class="combo-score ${rule.scoreClass}">${rule.emoji}</div>
+        <div class="combo-head-text"><div class="combo-name">${rule.label}</div><div class="combo-why">${rule.why}</div></div>
+      </div>
+      <div class="combo-products">${activeRows}${unopenedRow}</div>
+      <div class="upgrade-section">
+        <div class="upgrade-section-title">If you open this product</div>
+        <div class="upgrade-row"><span class="upgrade-icon">💡</span><div class="upgrade-text">${rule.tip}</div></div>
+        ${complementText}
+        ${clashHTML}
+        <button class="suggest-open-btn" onclick="openProduct('${u.id}')">Open ${u.name} → Move to active shelf</button>
+      </div>
+    </div>`;
+  }
+
+  let html = '';
+
+  // ── READY NOW ──
+  const readyNow = [...amActive,...bothActive,...pmActive];
+  if(readyNow.length){
+    html += `<div class="combo-section-divider"><h3>✅ Ready now — from your active shelf</h3></div>`;
+    const amCards=[...amActive,...bothActive].map(renderComboCard).join('');
+    const pmCards=[...pmActive,...bothActive].map(renderComboCard).join('');
+    if(amCards) html+=`<div style="margin-bottom:8px;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3)">Morning</div><div class="combo-grid" style="margin-bottom:24px">${amCards}</div>`;
+    if(pmCards) html+=`<div style="margin-bottom:8px;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3)">Evening</div><div class="combo-grid">${pmCards}</div>`;
+  }
+
+  // ── UNLOCK WITH UNOPENED ──
+  if(upgrades.length){
+    html += `<div class="combo-section-divider" style="margin-top:36px"><h3>✦ Unlock by opening a sealed product</h3></div>`;
+    html += `<div class="combo-grid">${upgrades.map(renderUpgradeCard).join('')}</div>`;
+  }
+
+  if(!readyNow.length && !upgrades.length){
+    html=`<div class="combo-empty"><div class="combo-empty-icon">🔍</div>
+      <div class="combo-empty-text">No synergies found yet</div>
+      <div class="combo-empty-sub">Add more products to unlock combos.</div></div>`;
+  }
+
+  document.getElementById('comboContent').innerHTML=html;
+}
+
+function useCombo(time,idsStr){
+  selected.clear();
+  idsStr.split(',').forEach(id=>selected.add(id));
+  currentTime=time;
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.querySelectorAll('.mode-tab').forEach(b=>b.classList.remove('active'));
+  document.getElementById('todayView').classList.add('active');
+  document.querySelectorAll('.mode-tab')[1].classList.add('active');
+  document.querySelectorAll('.ap-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.ap-btn')[time==='AM'?0:1].classList.add('active');
+  renderPicker(); updateCheckBtn(); resetResults();
+}
+
+function resetResults(){
+  document.getElementById('resultsPanel').innerHTML=`<div class="empty-state"><div class="empty-bloom">🌸</div><h3>Ready to check</h3><p>Select the products you're using today, then tap Check.</p></div>`;
+}
+
+init();
+</script>
+</body>
+</html>
