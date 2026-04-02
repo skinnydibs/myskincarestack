@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -275,6 +274,11 @@ body{font-family:'SF Pro Text',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-
 }
 .about-btn{width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);color:rgba(255,255,255,.7);font-size:14px;font-weight:700;cursor:pointer;font-family:-apple-system,sans-serif;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s;margin-left:auto}
 .about-btn:hover{background:rgba(255,255,255,.25);color:#fff}
+.shelf-filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+.filter-pill{padding:4px 12px;border-radius:20px;font-size:11px;font-weight:600;border:1.5px solid var(--border);background:var(--white);color:var(--ink2);cursor:pointer;transition:all .15s;font-family:-apple-system,BlinkMacSystemFont,sans-serif;letter-spacing:.02em}
+.filter-pill:hover{border-color:var(--bloom);color:var(--bloom)}
+.filter-pill.active{background:var(--bloom);border-color:var(--bloom);color:white}
+
 </style>
 </head>
 <body>
@@ -295,6 +299,16 @@ body{font-family:'SF Pro Text',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-
       <h2 style="color:var(--ink)">Active Shelf</h2>
       <p>Products you currently have open and are using.</p>
     </div>
+    <div class="shelf-filters" id="shelfFilters">
+      <button class="filter-pill active" onclick="setShelfFilter('all',this)">All</button>
+      <button class="filter-pill" onclick="setShelfFilter('1',this)">Cleanse</button>
+      <button class="filter-pill" onclick="setShelfFilter('2',this)">Tone / Essence</button>
+      <button class="filter-pill" onclick="setShelfFilter('3',this)">Serum</button>
+      <button class="filter-pill" onclick="setShelfFilter('4',this)">Eye Cream</button>
+      <button class="filter-pill" onclick="setShelfFilter('5',this)">Moisturise</button>
+      <button class="filter-pill" onclick="setShelfFilter('6',this)">Oil / Balm</button>
+      <button class="filter-pill" onclick="setShelfFilter('7',this)">SPF</button>
+    </div>
     <div class="product-grid" id="productGrid"></div>
     <div class="view-heading" style="margin-top:32px">
       <h2 style="color:var(--petal)">Unopened ✦</h2>
@@ -314,7 +328,7 @@ body{font-family:'SF Pro Text',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-
           </div>
         </div>
         <div id="reqListPreview"></div>
-        <div style="font-size:11px;color:#9E8878;line-height:1.6;border-top:1px solid #EDE8E3;padding-top:10px">Tap "Copy full list" then paste it to Lynn at <style="color:#F07C3A;text-decoration:none">captainpoofypants@gmail.com</span></a> and she will add them to the next update.</div>
+        <div style="font-size:11px;color:#9E8878;line-height:1.6;border-top:1px solid #EDE8E3;padding-top:10px">Tap "Copy full list" then paste it to Lynn at <a href="/cdn-cgi/l/email-protection#d1b2b0a1a5b0b8bfa1bebeb7a8a1b0bfa5a291b6bcb0b8bdffb2bebc" style="color:#F07C3A;text-decoration:none"><span class="__cf_email__" data-cfemail="503331202431393e203f3f362920313e242310373d31393c7e333f3d">[email&#160;protected]</span></a> and she will add them to the next update.</div>
       </div>
     </div>
 
@@ -447,7 +461,7 @@ body{font-family:'SF Pro Text',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-
   </div>
 </div>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script>
 // ═══════════════════════════════════════════════════════════════
 // PRODUCT DATABASE ; fully offline, no API needed
 // ═══════════════════════════════════════════════════════════════
@@ -667,6 +681,16 @@ const STEP_EMOJIS = {1:'🧼',2:'💧',3:'⚡',4:'👁️',5:'🛡️',6:'🌿',
 
 let shelf = [];
 let selected = new Set();
+
+let shelfFilter = 'all';
+
+function setShelfFilter(filter, btn) {
+  shelfFilter = filter;
+  document.querySelectorAll('.filter-pill').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderShelf();
+}
+
 let currentTime = 'AM';
 let pendingProduct = null;   // matched DB product or manual entry
 
@@ -775,7 +799,8 @@ function seedData(){
 // ── SHELF RENDER ─────────────────────────────────────────────
 function renderShelf(){
   const grid = document.getElementById('productGrid');
-  let html = shelf.map(p=>{
+  const filtered = shelfFilter==='all' ? shelf : shelf.filter(p=>String(p.step)===shelfFilter);
+  let html = filtered.map(p=>{
     const tags=[];
     if(p.time==='AM') tags.push(`<span class="tag t-am">☀ AM only</span>`);
     else if(p.time==='PM') tags.push(`<span class="tag t-pm">🌙 PM only</span>`);
@@ -808,7 +833,8 @@ function renderShelf(){
     ugrid.innerHTML=`<div style="grid-column:1/-1;padding:20px 0;font-size:13px;color:var(--ink3);font-style:italic">No unopened products yet ; add them with the + button and mark as unopened.</div>`;
     return;
   }
-  ugrid.innerHTML = unopened.map(p=>{
+  const filteredU = shelfFilter==='all' ? unopened : unopened.filter(p=>String(p.step)===shelfFilter);
+  ugrid.innerHTML = filteredU.map(p=>{
     const tags=[];
     if(p.time==='AM') tags.push(`<span class="tag t-am">☀ AM only</span>`);
     else if(p.time==='PM') tags.push(`<span class="tag t-pm">🌙 PM only</span>`);
@@ -1433,4 +1459,4 @@ init();
           <div style="width:38px;height:38px;border-radius:50%;background:#F07C3A;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:white;flex-shrink:0">L</div>
           <div>
             <div style="font-size:14px;font-weight:600;color:#1A1410">Lynn Lim</div>
-            <style="font-size:12px;color:#F07C3A;text-decoration:none">captainpoofypants@gmail.com</style>
+            <a href="/cdn-cgi/l/email-protection#a3c0c2d3d7c2cacdd3ccccc5dad3c2cdd7d0e3c4cec2cacf8dc0ccce" style="font-size:12px;color:#F07C3A;text-decoration:none"><span class="__cf_email__" data-cfemail="a0c3c1d0d4c1c9ced0cfcfc6d9d0c1ced4d3e0c7cdc1
