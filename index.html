@@ -12,41 +12,48 @@
 <meta name="theme-color" content="#F07C3A">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>My Skincare Stack</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
 
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
   --white:#FFFFFF;--off:#FAF8F5;--surface:#F5F0EB;
   --border:#E4DDD6;--border2:#EDE8E3;
-  --ink:#1A1410;--ink2:#4A3728;--ink3:#9E8878;
+  --ink:#1A1410;--ink2:#4A3728;--ink3:#6B5346;
   --bloom:#F07C3A;--bloom-l:#FEF3EB;--bloom-m:#FDDCC8;
   --petal:#C17A50;--petal-l:#FAF0E8;
   --leaf:#7A9E6E;--leaf-l:#EDF4EA;
   --sky:#D4956A;--sky-l:#FBF0E8;
   --sun:#E8B86D;--sun-l:#FDF6E8;
   --danger:#D94F3A;--warn:#D4860A;--safe:#4A9B72;
+  --font-display:'Playfair Display',Georgia,serif;
+  --font-body:'DM Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --space-xs:8px;--space-sm:12px;--space-md:20px;--space-lg:32px;--space-xl:56px;
 }
-body{font-family:'SF Pro Text',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--white);color:var(--ink);min-height:100vh}
+body{font-family:var(--font-body);background:var(--white);color:var(--ink);min-height:100vh}
 
 /* NAV */
-.topnav{top:0;z-index:200;background:#1A1410;border-bottom:none;padding:0 16px;display:flex;align-items:center;height:52px;position:sticky;overflow:visible}
-.mode-tabs{display:flex;background:rgba(255,255,255,.1);border-radius:10px;padding:4px;gap:2px;position:absolute;left:50%;transform:translateX(-50%);z-index:1}
-.mode-tab{padding:7px 24px;border:none;border-radius:7px;font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;background:transparent;color:rgba(255,255,255,.5);white-space:nowrap}
-.mode-tab.active{background:var(--bloom);color:#fff;box-shadow:0 2px 8px rgba(240,124,58,.5)}
+.topnav{top:0;z-index:200;background:var(--white);border-bottom:1px solid var(--border);box-shadow:0 1px 8px rgba(26,20,16,.05);padding:0 16px;display:flex;align-items:center;height:52px;position:sticky;overflow:visible}
+.mode-tabs{display:flex;background:var(--surface);border-radius:10px;padding:4px;gap:2px;position:absolute;left:50%;transform:translateX(-50%);z-index:1}
+.mode-tab{padding:7px 24px;border:none;border-radius:7px;font-family:var(--font-body);font-size:13px;font-weight:600;cursor:pointer;transition:background .2s,color .2s,box-shadow .2s;background:transparent;color:var(--ink3);white-space:nowrap}
+.mode-tab.active{background:var(--bloom);color:#fff;box-shadow:0 2px 8px rgba(240,124,58,.35)}
 
 /* VIEWS */
 .view{display:none}.view.active{display:block}
 
 /* SHELF */
-.shelf-view{max-width:920px;margin:0 auto;padding:32px 24px}
-.view-heading{margin-bottom:28px}
-.view-heading h2{font-family:'Georgia','Times New Roman',serif;font-size:28px;font-weight:400;margin-bottom:6px}
-.view-heading p{font-size:13px;color:var(--ink3);line-height:1.6}
-.product-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(252px,1fr));gap:12px;margin-bottom:24px}
+.shelf-view{max-width:960px;margin:0 auto;padding:var(--space-lg) 24px}
+.view-heading{margin-bottom:var(--space-lg)}
+.view-heading h2{font-family:var(--font-display);font-size:30px;font-weight:400;margin-bottom:8px;letter-spacing:-0.4px}
+.view-heading p{font-size:14px;color:var(--ink3);line-height:1.6;max-width:52ch}
+.product-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(268px,1fr));gap:14px;margin-bottom:var(--space-md)}
 
-.shelf-card{border:1.5px solid var(--border);border-radius:16px;padding:18px;background:var(--white);transition:all .18s}
-.shelf-card:hover{box-shadow:0 4px 16px rgba(0,0,0,.06);border-color:var(--bloom-m)}
-.shelf-card.finish-first{border-color:var(--sun);background:var(--sun-l)}
+.shelf-card{border:1.5px solid var(--border);border-radius:16px;padding:20px;background:var(--white);transition:box-shadow .18s,border-color .18s,transform .18s}
+.shelf-card:hover{box-shadow:0 6px 20px rgba(0,0,0,.07);border-color:var(--bloom-m);transform:translateY(-1px)}
+.shelf-card.finish-first{border-color:var(--sun);background:var(--sun-l);padding-top:14px}
+.shelf-card.finish-first::before{content:'Finish first';display:block;font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#92400E;margin-bottom:10px;opacity:.7}
 .card-top{display:flex;align-items:flex-start;gap:12px;margin-bottom:12px}
 .card-icon{width:42px;height:42px;border-radius:12px;background:var(--surface);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
 .card-name{font-size:13px;font-weight:600;line-height:1.3;margin-bottom:2px}
@@ -60,12 +67,12 @@ body{font-family:'SF Pro Text',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-
 .ing-pill{font-size:10px;padding:2px 8px;border-radius:20px;background:var(--surface);color:var(--ink2);font-weight:500}
 .ing-pill.hi{background:var(--bloom-l);color:#C06030}
 .card-actions{display:flex;gap:6px;margin-top:13px;padding-top:12px;border-top:1px solid var(--border2)}
-.card-btn{flex:1;padding:7px 0;border-radius:8px;font-size:11px;font-weight:600;letter-spacing:.04em;font-family:'SF Pro Text',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;cursor:pointer;transition:all .15s;border:1.5px solid var(--border);background:transparent;color:var(--ink2)}
+.card-btn{flex:1;padding:11px 0;border-radius:8px;font-size:11px;font-weight:600;letter-spacing:.04em;font-family:var(--font-body);cursor:pointer;transition:all .15s;border:1.5px solid var(--border);background:transparent;color:var(--ink2)}
 .card-btn:hover{border-color:var(--bloom);color:var(--bloom)}
 .card-btn.del:hover{border-color:var(--danger);color:var(--danger)}
 .card-btn.finish-on{background:var(--sun-l);border-color:var(--sun);color:#92400E}
 
-.add-card{border:2px dashed var(--border);border-radius:16px;padding:28px 16px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;cursor:pointer;transition:all .18s;min-height:160px}
+.add-card{border:2px dashed var(--border);border-radius:16px;padding:28px 16px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;cursor:pointer;transition:border-color .18s,background .18s;min-height:160px}
 .add-card:hover{border-color:var(--bloom);background:var(--bloom-l)}
 .add-icon{width:44px;height:44px;border-radius:50%;background:var(--bloom-l);display:flex;align-items:center;justify-content:center;font-size:22px;transition:background .15s}
 .add-card:hover .add-icon{background:var(--bloom-m)}
@@ -73,25 +80,25 @@ body{font-family:'SF Pro Text',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-
 .add-sub{font-size:11.5px;color:var(--ink3)}
 
 /* MODAL */
-.modal-overlay{position:fixed;inset:0;z-index:500;background:rgba(28,28,46,.4);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .22s}
+.modal-overlay{position:fixed;inset:0;z-index:500;background:rgba(28,28,46,.45);backdrop-filter:blur(3px);display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .22s}
 .modal-overlay.open{opacity:1;pointer-events:all}
 .modal{background:var(--white);border-radius:22px;width:100%;max-width:500px;max-height:92vh;overflow-y:auto;box-shadow:0 24px 64px rgba(0,0,0,.18);transform:translateY(16px);transition:transform .22s}
 .modal-overlay.open .modal{transform:translateY(0)}
 .modal::-webkit-scrollbar{width:0}
 .modal-head{padding:24px 24px 0;display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
-.modal-head h3{font-family:'Georgia','Times New Roman',serif;font-size:23px;font-weight:400}
+.modal-head h3{font-family:var(--font-display);font-size:24px;font-weight:400;letter-spacing:-0.2px}
 .modal-close{width:32px;height:32px;border-radius:50%;background:var(--surface);border:none;cursor:pointer;font-size:15px;color:var(--ink2);display:flex;align-items:center;justify-content:center}
 .modal-sub{padding:0 24px 20px;font-size:12.5px;color:var(--ink3);line-height:1.6}
 .modal-body{padding:0 24px;display:flex;flex-direction:column;gap:16px}
 
 .field label{display:block;font-size:10.5px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--ink3);margin-bottom:6px}
-.field input,.field select{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:11px;font-family:'SF Pro Text',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:13.5px;color:var(--ink);background:var(--white);outline:none;transition:border-color .15s}
+.field input,.field select{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:11px;font-family:var(--font-body);font-size:13.5px;color:var(--ink);background:var(--white);outline:none;transition:border-color .15s}
 .field input:focus,.field select:focus{border-color:var(--bloom)}
 .field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 
 /* Search + suggestions */
 .search-wrap{position:relative}
-.search-wrap input{width:100%;padding:11px 44px 11px 14px;border:1.5px solid var(--border);border-radius:11px;font-family:'SF Pro Text',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:13.5px;color:var(--ink);background:var(--white);outline:none;transition:border-color .15s}
+.search-wrap input{width:100%;padding:11px 44px 11px 14px;border:1.5px solid var(--border);border-radius:11px;font-family:var(--font-body);font-size:13.5px;color:var(--ink);background:var(--white);outline:none;transition:border-color .15s}
 .search-wrap input:focus{border-color:var(--bloom)}
 .search-clear{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:14px;color:var(--ink3);display:none}
 
@@ -128,24 +135,24 @@ body{font-family:'SF Pro Text',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-
 .toggle-text strong{display:block;font-size:13px;font-weight:500}
 .toggle-text span{font-size:11.5px;color:var(--ink3)}
 .modal-footer{display:flex;gap:10px;padding:20px 24px 24px}
-.btn-primary{flex:1;padding:13px;background:var(--bloom);color:white;border:none;border-radius:12px;cursor:pointer;font-size:14px;font-weight:600;font-family:'SF Pro Text',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;transition:background .15s}
-.btn-primary:hover{background:#e5577a}
-.btn-secondary{padding:13px 20px;background:var(--surface);color:var(--ink2);border:none;border-radius:12px;cursor:pointer;font-size:13.5px;font-weight:500;font-family:'SF Pro Text',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+.btn-primary{flex:1;padding:13px;background:var(--bloom);color:white;border:none;border-radius:12px;cursor:pointer;font-size:14px;font-weight:600;font-family:var(--font-body);transition:background .15s}
+.btn-primary:hover{background:#c4601e}
+.btn-secondary{padding:13px 20px;background:var(--surface);color:var(--ink2);border:none;border-radius:12px;cursor:pointer;font-size:13.5px;font-weight:500;font-family:var(--font-body)}
 
 /* TODAY VIEW */
-.today-view{display:grid;grid-template-columns:340px 1fr;height:calc(100vh - 58px)}
+.today-view{display:grid;grid-template-columns:minmax(280px,340px) 1fr;height:calc(100vh - 58px)}
 .picker-panel{border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
 .picker-head{padding:20px 20px 14px;border-bottom:1px solid var(--border2)}
-.picker-head h3{font-family:'Georgia','Times New Roman',serif;font-size:19px;font-weight:400;margin-bottom:12px}
+.picker-head h3{font-family:var(--font-display);font-size:19px;font-weight:400;margin-bottom:12px}
 .am-pm-row{display:flex;background:var(--surface);border-radius:10px;padding:4px;gap:4px}
-.ap-btn{flex:1;padding:8px 0;text-align:center;border:none;border-radius:7px;font-family:'SF Pro Text',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:12.5px;font-weight:600;cursor:pointer;transition:all .2s;background:transparent;color:var(--ink3)}
+.ap-btn{flex:1;padding:8px 0;text-align:center;border:none;border-radius:7px;font-family:var(--font-body);font-size:12.5px;font-weight:600;cursor:pointer;transition:all .2s;background:transparent;color:var(--ink3)}
 .ap-btn.active{background:var(--white);color:var(--ink);box-shadow:0 1px 4px rgba(0,0,0,.08)}
 .picker-scroll{flex:1;overflow-y:auto;padding:12px 16px}
 .picker-scroll::-webkit-scrollbar{width:3px}
 .picker-scroll::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
 .picker-step-label{font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--ink3);margin:14px 0 6px;padding-left:2px}
 .picker-step-label:first-child{margin-top:2px}
-.pick-item{display:flex;align-items:center;gap:11px;padding:11px 13px;border-radius:12px;border:1.5px solid var(--border);margin-bottom:7px;cursor:pointer;transition:all .17s;background:var(--white)}
+.pick-item{display:flex;align-items:center;gap:11px;padding:11px 13px;border-radius:12px;border:1.5px solid var(--border);margin-bottom:7px;cursor:pointer;transition:border-color .17s,background .17s,box-shadow .17s;background:var(--white)}
 .pick-item:hover{border-color:var(--bloom-m);background:var(--bloom-l)}
 .pick-item.selected{border-color:var(--bloom);background:var(--bloom-l);box-shadow:0 2px 8px rgba(255,107,138,.1)}
 .pick-item.finish-first-item{border-left:3px solid var(--sun)}
@@ -158,25 +165,25 @@ body{font-family:'SF Pro Text',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-
 .picker-foot{padding:14px 16px;border-top:1px solid var(--border2)}
 .sel-count{font-size:11.5px;color:var(--ink3);text-align:center;margin-bottom:10px}
 .sel-count em{color:var(--bloom);font-style:normal;font-weight:600}
-.check-btn{width:100%;padding:13px;background:var(--ink);color:white;border:none;border-radius:12px;cursor:pointer;font-size:13.5px;font-weight:600;font-family:'SF Pro Text',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;transition:background .2s;letter-spacing:.04em}
+.check-btn{width:100%;padding:13px;background:var(--ink);color:white;border:none;border-radius:12px;cursor:pointer;font-size:13.5px;font-weight:600;font-family:var(--font-body);transition:background .2s;letter-spacing:.04em}
 .check-btn:hover{background:var(--bloom)}
 .check-btn:disabled{opacity:.3;cursor:default;background:var(--ink)}
 
 /* RESULTS */
-.results-panel{overflow-y:auto;padding:28px 32px;display:flex;flex-direction:column;gap:20px;background:var(--off);height:100%;min-height:0}
+.results-panel{overflow-y:auto;padding:28px 32px;display:flex;flex-direction:column;gap:16px;background:var(--off);height:100%;min-height:0}
 .results-panel::-webkit-scrollbar{width:4px}
 .results-panel::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
 .empty-state{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:14px;padding:60px 20px}
 .empty-bloom{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--bloom-l),var(--petal-l));display:flex;align-items:center;justify-content:center;font-size:32px;margin:0 auto}
-.empty-state h3{font-family:'Georgia','Times New Roman',serif;font-size:24px;font-weight:400}
-.empty-state p{font-size:13px;color:var(--ink3);max-width:240px;line-height:1.7}
+.empty-state h3{font-family:var(--font-display);font-size:24px;font-weight:400}
+.empty-state p{font-size:14px;color:var(--ink3);max-width:240px;line-height:1.7}
 .result-card{background:var(--white);border-radius:16px;border:1.5px solid var(--border);overflow:visible;animation:riseUp .3s ease both}
 @keyframes riseUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 .rc-head{padding:18px 22px 14px;border-bottom:1px solid var(--border2);display:flex;align-items:center;gap:10px}
-.rc-head h3{font-family:'Georgia','Times New Roman',serif;font-size:18px;font-weight:400;flex:1}
+.rc-head h3{font-family:var(--font-display);font-size:18px;font-weight:400;flex:1}
 .status-pill{padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:.05em}
 .sp-ok{background:var(--leaf-l);color:#3A6828}.sp-warn{background:#FEF3C7;color:#92400E}.sp-bad{background:#FEE2E2;color:#C05020}
-.rc-body{padding:18px 22px;font-size:13px;line-height:1.85;color:var(--ink2);word-wrap:break-word;overflow-wrap:break-word}
+.rc-body{padding:18px 22px;font-size:14px;line-height:1.85;color:var(--ink2);word-wrap:break-word;overflow-wrap:break-word}
 .rc-body strong{color:var(--ink)}.rc-body p+p{margin-top:12px}
 .conflict-block{background:#FEF2F2;border:1.5px solid #FECACA;border-radius:12px;padding:14px 16px;margin-bottom:12px;overflow:visible}
 .conflict-block h4{font-size:13px;font-weight:700;color:var(--danger);margin-bottom:6px}
@@ -199,7 +206,7 @@ body{font-family:'SF Pro Text',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-
 .or-badge{font-size:10.5px;padding:3px 10px;border-radius:20px;background:var(--surface);color:var(--ink2);font-weight:600}
 .finish-strip{background:var(--sun-l);border:1.5px solid #FCD34D;border-radius:16px;padding:18px 20px;animation:riseUp .3s ease .2s both}
 .strip-head{display:flex;align-items:center;gap:8px;margin-bottom:12px}
-.strip-head h4{font-family:'Georgia','Times New Roman',serif;font-size:17px;font-weight:400}
+.strip-head h4{font-family:var(--font-display);font-size:17px;font-weight:400}
 .finish-items{display:flex;flex-direction:column;gap:8px}
 .finish-item{display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.7);border-radius:10px;padding:10px 14px}
 .fi-left{display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:500}
@@ -224,21 +231,21 @@ body{font-family:'SF Pro Text',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-
 .upgrade-text{font-size:11.5px;color:var(--ink2);line-height:1.5}
 .upgrade-text strong{color:var(--ink)}
 .upgrade-clash{background:#FEE2E2;border-radius:8px;padding:8px 12px;font-size:11.5px;color:var(--danger);display:flex;gap:6px;align-items:flex-start;margin-top:4px}
-.suggest-open-btn{width:100%;padding:9px;background:var(--petal);color:white;border:none;border-radius:8px;cursor:pointer;font-size:12px;font-weight:700;font-family:-apple-system,BlinkMacSystemFont,sans-serif;letter-spacing:.04em;margin-top:8px;transition:background .15s}
+.suggest-open-btn{width:100%;padding:9px;background:var(--petal);color:white;border:none;border-radius:8px;cursor:pointer;font-size:12px;font-weight:700;font-family:var(--font-body);letter-spacing:.04em;margin-top:8px;transition:background .15s}
 .suggest-open-btn:hover{background:#A0622A}
 .combo-section-divider{display:flex;align-items:center;gap:12px;margin:28px 0 20px}
-.combo-section-divider h3{font-family:Georgia,serif;font-size:20px;font-weight:400;white-space:nowrap}
+.combo-section-divider h3{font-family:var(--font-display);font-size:20px;font-weight:400;white-space:nowrap}
 .combo-section-divider::before,.combo-section-divider::after{content:'';flex:1;height:1px;background:var(--border)}
 
 /* COMBO VIEW */
-.combo-view{max-width:860px;margin:0 auto;padding:32px 24px}
-.combo-section{margin-bottom:32px}
-.combo-section-head{display:flex;align-items:center;gap:10px;margin-bottom:16px;padding-bottom:12px;border-bottom:2px solid var(--border)}
-.combo-section-head h3{font-family:'Georgia','Times New Roman',serif;font-size:22px;font-weight:400}
+.combo-view{max-width:900px;margin:0 auto;padding:var(--space-lg) 24px}
+.combo-section{margin-bottom:var(--space-xl)}
+.combo-section-head{display:flex;align-items:center;gap:12px;margin-bottom:var(--space-md);padding-bottom:14px;border-bottom:2px solid var(--border)}
+.combo-section-head h3{font-family:var(--font-display);font-size:24px;font-weight:400;letter-spacing:-0.3px}
 .combo-time-badge{padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:.05em}
 .ctb-am{background:#FEF9C3;color:#92400E}
 .ctb-pm{background:var(--petal-l);color:#8B4513}
-.combo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:14px}
+.combo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
 .combo-card{border:1.5px solid var(--border);border-radius:16px;background:var(--white);overflow:hidden;transition:box-shadow .18s}
 .combo-card:hover{box-shadow:0 6px 20px rgba(0,0,0,.07)}
 .combo-card-head{padding:16px 18px 12px;border-bottom:1px solid var(--border2);display:flex;align-items:flex-start;gap:10px}
@@ -259,11 +266,11 @@ body{font-family:'SF Pro Text',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-
 .cp-ing{font-size:9.5px;padding:1px 7px;border-radius:20px;background:var(--bloom-l);color:#C06030;font-weight:600}
 .combo-footer{padding:10px 18px 14px;background:var(--off);display:flex;align-items:center;gap:6px}
 .combo-footer-text{font-size:11.5px;color:var(--ink2);line-height:1.5;flex:1}
-.use-combo-btn{padding:7px 14px;background:var(--bloom);color:white;border:none;border-radius:8px;cursor:pointer;font-size:11.5px;font-weight:600;font-family:'SF Pro Text',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;white-space:nowrap;transition:background .15s;flex-shrink:0}
+.use-combo-btn{padding:7px 14px;background:var(--bloom);color:white;border:none;border-radius:8px;cursor:pointer;font-size:11.5px;font-weight:600;font-family:var(--font-body);white-space:nowrap;transition:background .15s;flex-shrink:0}
 .use-combo-btn:hover{background:#e5577a}
 .combo-empty{text-align:center;padding:60px 24px;color:var(--ink3)}
 .combo-empty-icon{font-size:40px;margin-bottom:12px}
-.combo-empty-text{font-family:'Georgia','Times New Roman',serif;font-size:20px;font-style:italic;margin-bottom:8px}
+.combo-empty-text{font-family:var(--font-display);font-size:20px;font-style:italic;margin-bottom:8px}
 .combo-empty-sub{font-size:13px;line-height:1.6}
 
 @media(max-width:720px){
@@ -272,12 +279,19 @@ body{font-family:'SF Pro Text',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-
   .results-panel{padding:20px}
   .product-grid{grid-template-columns:1fr}
 }
-.about-btn{width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);color:rgba(255,255,255,.7);font-size:14px;font-weight:700;cursor:pointer;font-family:-apple-system,sans-serif;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s;margin-left:auto}
-.about-btn:hover{background:rgba(255,255,255,.25);color:#fff}
+.about-btn{width:30px;height:30px;border-radius:50%;background:var(--surface);border:1px solid var(--border);color:var(--ink2);font-size:14px;font-weight:700;cursor:pointer;font-family:var(--font-body);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s;margin-left:auto}
+.about-btn:hover{background:var(--bloom-l);border-color:var(--bloom-m);color:var(--bloom)}
 .shelf-filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
-.filter-pill{padding:4px 12px;border-radius:20px;font-size:11px;font-weight:600;border:1.5px solid var(--border);background:var(--white);color:var(--ink2);cursor:pointer;transition:all .15s;font-family:-apple-system,BlinkMacSystemFont,sans-serif;letter-spacing:.02em}
+.filter-pill{padding:4px 12px;border-radius:20px;font-size:11px;font-weight:600;border:1.5px solid var(--border);background:var(--white);color:var(--ink2);cursor:pointer;transition:all .15s;font-family:var(--font-body);letter-spacing:.02em}
 .filter-pill:hover{border-color:var(--bloom);color:var(--bloom)}
 .filter-pill.active{background:var(--bloom);border-color:var(--bloom);color:white}
+
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important}
+  .modal{transform:none !important}
+  .modal-overlay{transition:opacity .1s}
+  .shelf-card:hover{transform:none}
+}
 
 </style>
 </head>
@@ -316,26 +330,23 @@ body{font-family:'SF Pro Text',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-
     </div>
     <div class="product-grid" id="unopenedGrid"></div>
     <!-- Requests section -->
-    <div style="margin-top:32px">
-      <div style="font-family:Georgia,serif;font-size:22px;font-weight:400;color:#1A1410;margin-bottom:6px">My Requests</div>
-      <p style="font-size:13px;color:#9E8878;line-height:1.6;margin-bottom:16px">Products you have requested to be added to the database. Copy the list and send it to Lynn.</p>
-      <div style="background:#FAF0E8;border-radius:14px;padding:18px 20px;display:flex;flex-direction:column;gap:12px">
+    <div style="margin-top:56px">
+      <div style="font-family:var(--font-display);font-size:26px;font-weight:400;color:var(--ink);margin-bottom:8px;letter-spacing:-0.3px">My Requests</div>
+      <p style="font-size:13px;color:var(--ink3);line-height:1.6;margin-bottom:16px">Products you have requested to be added to the database. Copy the list and send it to Lynn.</p>
+      <div style="background:var(--petal-l);border-radius:14px;padding:18px 20px;display:flex;flex-direction:column;gap:12px">
         <div style="display:flex;align-items:center;justify-content:space-between">
-          <div id="reqCount" style="font-size:13px;font-weight:600;color:#4A3728">No requests yet</div>
+          <div id="reqCount" style="font-size:13px;font-weight:600;color:var(--ink2)">No requests yet</div>
           <div style="display:flex;gap:8px">
-            <button id="copyReqBtn" onclick="copyRequests()" style="padding:7px 14px;background:#F07C3A;color:white;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:-apple-system,sans-serif">Copy full list</button>
-            <button onclick="clearRequests()" style="padding:7px 14px;background:white;color:#9E8878;border:1.5px solid #E4DDD6;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;font-family:-apple-system,sans-serif">Clear</button>
+            <button id="copyReqBtn" onclick="copyRequests()" style="padding:7px 14px;background:var(--bloom);color:white;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--font-body)">Copy full list</button>
+            <button onclick="clearRequests()" style="padding:7px 14px;background:white;color:var(--ink3);border:1.5px solid var(--border);border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--font-body)">Clear</button>
           </div>
         </div>
         <div id="reqListPreview"></div>
-        <div style="font-size:11px;color:#9E8878;line-height:1.6;border-top:1px solid #EDE8E3;padding-top:10px">Tap "Copy full list" then paste it to Lynn at <style="color:#F07C3A;text-decoration:none">captainpoofypants@gmail.com</span></a> and she will add them to the next update.</div>
+        <div style="font-size:11px;color:var(--ink3);line-height:1.6;border-top:1px solid var(--border2);padding-top:10px">Tap "Copy full list" then paste it to Lynn at <a href="/cdn-cgi/l/email-protection#d1b2b0a1a5b0b8bfa1bebeb7a8a1b0bfa5a291b6bcb0b8bdffb2bebc" style="color:var(--bloom);text-decoration:none"><span class="__cf_email__" data-cfemail="503331202431393e203f3f362920313e242310373d31393c7e333f3d">[email&#160;protected]</span></a> and she will add them to the next update.</div>
       </div>
     </div>
 
-    <div style="padding:28px 0 48px 0;width:100%">
-      <div style="height:1px;background:#E4DDD6;margin-bottom:20px"></div>
-      <div style="font-size:11px;color:#9E8878;line-height:1.9;max-width:640px">The compatibility checks and synergy suggestions in this app are based on widely referenced cosmetic chemistry literature, published dermatology research, and ingredient interaction guides from brands like Skinceuticals, Paula's Choice, and The Ordinary. The core conflict rules; retinoids with exfoliating acids, vitamin C with retinol, and similar well-documented pairings; are consistently agreed upon across multiple reputable sources.<br><br>That said, skincare is deeply personal. How your skin responds depends on your skin type, tolerance, concentration of actives, and how you layer products. This app is a starting point, not a prescription. It cannot replace advice from a dermatologist or trained skincare professional; especially if you have sensitive skin, active skin conditions, or are using prescription treatments.<br><br>Use these suggestions as a guide, not a guarantee. Always patch test when introducing new products, and listen to your skin above all else.<br><br><span style="font-size:10.5px;opacity:.65;font-style:italic">My Skincare Stack is a personal project shared freely. All information is provided as-is, for educational and organisational purposes only. The creator accepts no responsibility for any reactions, outcomes, or decisions made based on this app. Use at your own discretion.</span></div>
-    </div>
+    <div id="disclaimerShelf" style="padding:28px 0 48px 0;width:100%"></div>
   </div>
 </div>
 
@@ -346,8 +357,8 @@ body{font-family:'SF Pro Text',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-
       <div class="picker-head">
         <h3>What are you using today?</h3>
         <div class="am-pm-row">
-          <button class="ap-btn active" onclick="setTime('AM',this)">☀️ Morning</button>
-          <button class="ap-btn" onclick="setTime('PM',this)">🌙 Evening</button>
+          <button class="ap-btn active" onclick="setTime('AM',this)"><span aria-hidden="true">☀️</span> Morning</button>
+          <button class="ap-btn" onclick="setTime('PM',this)"><span aria-hidden="true">🌙</span> Evening</button>
         </div>
       </div>
       <div class="picker-scroll" id="pickerList"></div>
@@ -358,7 +369,7 @@ body{font-family:'SF Pro Text',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-
     </div>
     <div class="results-panel" id="resultsPanel">
       <div class="empty-state">
-        <div class="empty-bloom">🌸</div>
+        <div class="empty-bloom" aria-hidden="true">🌸</div>
         <h3>Ready to check</h3>
         <p>Select the products you're using today, then tap Check.</p>
       </div>
@@ -374,18 +385,15 @@ body{font-family:'SF Pro Text',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-
       <p>Ingredients that actively boost each other ; curated from what you own. No conflicts, just synergy.</p>
     </div>
     <div id="comboContent"></div>
-    <div style="padding:28px 0 48px 0;width:100%">
-      <div style="height:1px;background:#E4DDD6;margin-bottom:20px"></div>
-      <div style="font-size:11px;color:#9E8878;line-height:1.9;max-width:640px">The compatibility checks and synergy suggestions in this app are based on widely referenced cosmetic chemistry literature, published dermatology research, and ingredient interaction guides from brands like Skinceuticals, Paula's Choice, and The Ordinary. The core conflict rules; retinoids with exfoliating acids, vitamin C with retinol, and similar well-documented pairings; are consistently agreed upon across multiple reputable sources.<br><br>That said, skincare is deeply personal. How your skin responds depends on your skin type, tolerance, concentration of actives, and how you layer products. This app is a starting point, not a prescription. It cannot replace advice from a dermatologist or trained skincare professional; especially if you have sensitive skin, active skin conditions, or are using prescription treatments.<br><br>Use these suggestions as a guide, not a guarantee. Always patch test when introducing new products, and listen to your skin above all else.<br><br><span style="font-size:10.5px;opacity:.65;font-style:italic">My Skincare Stack is a personal project shared freely. All information is provided as-is, for educational and organisational purposes only. The creator accepts no responsibility for any reactions, outcomes, or decisions made based on this app. Use at your own discretion.</span></div>
-    </div>
+    <div id="disclaimerCombo" style="padding:28px 0 48px 0;width:100%"></div>
   </div>
 </div>
 
 <!-- ADD MODAL -->
-<div class="modal-overlay" id="modalOverlay" onclick="handleOverlayClick(event)">
+<div class="modal-overlay" id="modalOverlay" onclick="handleOverlayClick(event)" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
   <div class="modal">
     <div class="modal-head">
-      <h3>Add to Shelf</h3>
+      <h3 id="modalTitle">Add to Shelf</h3>
       <button class="modal-close" onclick="closeModal()">✕</button>
     </div>
     <div class="modal-sub">Start typing ; matching products appear instantly from the built-in database.</div>
@@ -432,26 +440,40 @@ body{font-family:'SF Pro Text',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-
             </select>
           </div>
         </div>
+        <!-- Ingredient checkbox grid -->
+        <div id="ingCheckGrid" style="background:var(--surface);border-radius:11px;padding:13px 14px;display:flex;flex-direction:column;gap:10px">
+          <div style="font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--ink3)">Key ingredients — tick what's on the label</div>
+          <div id="ingCheckRows"></div>
+        </div>
+      </div>
+
+      <!-- DB override disclosure ; shown when a DB product is selected -->
+      <div id="ingOverrideWrap" style="display:none;flex-direction:column;gap:0">
+        <button onclick="toggleIngOverride()" style="background:none;border:none;cursor:pointer;font-size:11.5px;font-weight:600;color:var(--ink3);text-align:left;padding:4px 0;font-family:var(--font-body);display:flex;align-items:center;gap:5px"><span id="ingOverrideArrow">▶</span> Override ingredients</button>
+        <div id="ingOverridePanel" style="display:none;flex-direction:column;gap:8px;margin-top:8px">
+          <div style="background:#FEF3C7;border:1.5px solid #FDE68A;border-radius:9px;padding:9px 12px;font-size:11.5px;color:#92400E;line-height:1.5">⚠️ These additions are <strong>not verified</strong> against the database. Use only if you know the product contains these ingredients.</div>
+          <div id="ingOverrideRows"></div>
+        </div>
       </div>
 
       <label class="toggle-row">
         <input type="checkbox" id="fFinish">
-        <div class="toggle-text"><strong>⭐ Finish First</strong><span>Use this up before opening a new one</span></div>
+        <div class="toggle-text"><strong><span aria-hidden="true">⭐</span> Finish First</strong><span>Use this up before opening a new one</span></div>
       </label>
       <label class="toggle-row">
         <input type="checkbox" id="fWeekly">
-        <div class="toggle-text"><strong>📆 Use Sparingly</strong><span>Only 2–3× per week</span></div>
+        <div class="toggle-text"><strong><span aria-hidden="true">📆</span> Use Sparingly</strong><span>Only 2–3× per week</span></div>
       </label>
     </div>
     
       <!-- Request form -->
-      <div style="background:#FAF0E8;border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:10px">
-        <div style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#C17A50">Request this product</div>
-        <div style="font-size:12px;color:#4A3728;line-height:1.5">Not finding your product? Submit a request and Lynn will add it to the database for everyone.</div>
-        <input id="reqName" type="text" placeholder="Product name" style="padding:9px 12px;border:1.5px solid #E4DDD6;border-radius:9px;font-size:13px;font-family:-apple-system,sans-serif;color:#1A1410;background:white;outline:none">
-        <input id="reqBrand" type="text" placeholder="Brand" style="padding:9px 12px;border:1.5px solid #E4DDD6;border-radius:9px;font-size:13px;font-family:-apple-system,sans-serif;color:#1A1410;background:white;outline:none">
-        <button onclick="submitRequest()" style="padding:9px;background:#F07C3A;color:white;border:none;border-radius:9px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:-apple-system,sans-serif">Submit request</button>
-        <div id="reqSuccess" style="display:none;font-size:12px;color:#4A9B72;font-weight:600;text-align:center">Submitted! Lynn will review and add it.</div>
+      <div style="background:var(--petal-l);border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:10px">
+        <div style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--petal)">Request this product</div>
+        <div style="font-size:12px;color:var(--ink2);line-height:1.5">Not finding your product? Submit a request and Lynn will add it to the database for everyone.</div>
+        <input id="reqName" type="text" placeholder="Product name" style="padding:9px 12px;border:1.5px solid var(--border);border-radius:9px;font-size:13px;font-family:var(--font-body);color:var(--ink);background:white;outline:none">
+        <input id="reqBrand" type="text" placeholder="Brand" style="padding:9px 12px;border:1.5px solid var(--border);border-radius:9px;font-size:13px;font-family:var(--font-body);color:var(--ink);background:white;outline:none">
+        <button onclick="submitRequest()" style="padding:9px;background:var(--bloom);color:white;border:none;border-radius:9px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:var(--font-body)">Submit request</button>
+        <div id="reqSuccess" style="display:none;font-size:12px;color:var(--safe);font-weight:600;text-align:center">Submitted! Lynn will review and add it.</div>
       </div>
 
 <div class="modal-footer">
@@ -462,6 +484,19 @@ body{font-family:'SF Pro Text',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-
 </div>
 
 <script>
+// ═══════════════════════════════════════════════════════════════
+// DISCLAIMER — single source, rendered into both Shelf + Combo
+// ═══════════════════════════════════════════════════════════════
+function renderDisclaimer(containerId){
+  const el=document.getElementById(containerId);
+  if(!el)return;
+  el.innerHTML=`<div style="height:1px;background:var(--border);margin-bottom:20px"></div><div style="font-size:11px;color:var(--ink3);line-height:1.9;max-width:640px">The compatibility checks and synergy suggestions in this app are based on widely referenced cosmetic chemistry literature, published dermatology research, and ingredient interaction guides from brands like Skinceuticals, Paula's Choice, and The Ordinary. The core conflict rules; retinoids with exfoliating acids, vitamin C with retinol, and similar well-documented pairings; are consistently agreed upon across multiple reputable sources.<br><br>That said, skincare is deeply personal. How your skin responds depends on your skin type, tolerance, concentration of actives, and how you layer products. This app is a starting point, not a prescription. It cannot replace advice from a dermatologist or trained skincare professional; especially if you have sensitive skin, active skin conditions, or are using prescription treatments.<br><br>Use these suggestions as a guide, not a guarantee. Always patch test when introducing new products, and listen to your skin above all else.<br><br><span style="font-size:10.5px;opacity:.65;font-style:italic">My Skincare Stack is a personal project shared freely. All information is provided as-is, for educational and organisational purposes only. The creator accepts no responsibility for any reactions, outcomes, or decisions made based on this app. Use at your own discretion.</span></div>`;
+}
+document.addEventListener('DOMContentLoaded',()=>{
+  renderDisclaimer('disclaimerShelf');
+  renderDisclaimer('disclaimerCombo');
+});
+
 // ═══════════════════════════════════════════════════════════════
 // PRODUCT DATABASE ; fully offline, no API needed
 // ═══════════════════════════════════════════════════════════════
@@ -487,7 +522,7 @@ const DB = [
   {id:'sc-retinol-0-3',   name:'Retinol 0.3',                    brand:'Skinceuticals', step:3, time:'PM',   ings:['Retinol'], desc:'Entry-level retinol 0.3% in a moisturising base. Start 2–3× per week and build up tolerance.', weekly:true},
   {id:'sc-retinol-0-5',   name:'Retinol 0.5',                    brand:'Skinceuticals', step:3, time:'PM',   ings:['Retinol'], desc:'Mid-strength retinol 0.5%. For skin acclimated to retinol. Promotes cell turnover and smooths fine lines.', weekly:true},
   {id:'sc-retinol-1',     name:'Retinol 1.0',                    brand:'Skinceuticals', step:3, time:'PM',   ings:['Retinol'], desc:'High-strength retinol 1.0% for experienced retinol users. Significant anti-ageing and skin-renewing benefits.', weekly:true},
-  {id:'sc-metacell',      name:'Metacell Renewal B3',            brand:'Skinceuticals', step:5, time:'AM',   ings:['Niacinamide','Glycerin','Tri-peptide'], desc:'Lightweight moisturiser with niacinamide and peptides. Brightens and firms with daily use.', weekly:false},
+  {id:'sc-metacell',      name:'Metacell Renewal B3',            brand:'Skinceuticals', step:5, time:'AM',   ings:['Niacinamide','Glycerin','Peptides'], desc:'Lightweight moisturiser with niacinamide and peptides. Brightens and firms with daily use.', weekly:false},
   {id:'sc-daily-moisture',name:'Daily Moisture',                 brand:'Skinceuticals', step:5, time:'BOTH', ings:['Hyaluronic Acid','Aloe Vera'], desc:'Lightweight daily moisturiser for normal to oily skin. Hydrates without heaviness.', weekly:false},
   {id:'sc-sheer-mineral',  name:'Sheer Mineral UV Defense SPF 50',   brand:'Skinceuticals', step:7, time:'AM', ings:['SPF','Zinc Oxide'], desc:'100% mineral SPF 50 with zinc oxide. Lightweight, transparent finish suitable for sensitive skin.', weekly:false},
   {id:'sc-physical-fusion',name:'Physical Fusion UV Defense SPF 50', brand:'Skinceuticals', step:7, time:'AM', ings:['SPF','Zinc Oxide','Titanium Dioxide'], desc:'Tinted mineral SPF 50 with zinc oxide and titanium dioxide. Universal translucent tint blurs imperfections and gives a natural glow finish. Suitable for all skin types including sensitive.', weekly:false},
@@ -554,7 +589,7 @@ const DB = [
   {id:'sc-age-interrupter-ultra', name:'A.G.E. Interrupter Ultra',      brand:'Skinceuticals', step:5, time:'BOTH', ings:['Proxylane','Peptides','Blueberry Extract','Phytosphingosine'], desc:'Advanced anti-glycation moisturiser. Higher concentration of Proxylane than the original with added peptides. Targets deep wrinkles, loss of firmness, and skin density. Rich cream texture.', weekly:false},
 
   // ── IT COSMETICS ──
-  {id:'itc-confidence-sleep', name:'Confidence in Your Beauty Sleep Serum', brand:'IT Cosmetics', step:3, time:'PM', ings:['Retinol','Ceramides','Hyaluronic Acid','Peptides'], desc:'Overnight renewal serum with retinol, ceramides, peptides, and hyaluronic acid. Smooths fine lines and restores radiance while you sleep. Gentler retinol formulation suitable for sensitive skin.', weekly:false},
+  {id:'itc-confidence-sleep', name:'Confidence in Your Beauty Sleep Serum', brand:'IT Cosmetics', step:3, time:'PM', ings:['Vitamin C','Ferulic Acid','Polydatin','Peptides','Hyaluronic Acid'], desc:'Tri-Aox overnight antioxidant serum with vitamin C, ferulic acid, and polydatin (a resveratrol derivative). Brightens, firms, and protects skin from oxidative stress overnight. No retinol.', weekly:false},
 
   // ── ELIZABETH ARDEN ──
   {id:'ea-ceramide-capsules', name:'Advanced Ceramide Capsules Daily Youth Restoring Serum', brand:'Elizabeth Arden', step:3, time:'BOTH', ings:['Ceramides','Hyaluronic Acid','Vitamin E'], desc:'Iconic single-use ceramide capsules. Each capsule delivers a concentrated dose of ceramides, hyaluronic acid, and vitamin E. Restores barrier, plumps, and smooths. Single-dose format keeps actives fresh.', weekly:false},
@@ -586,7 +621,7 @@ const DB = [
   {id:'lancome-genifique',  name:'Advanced Génifique Youth Activating Serum', brand:'Lancôme', step:3, time:'BOTH', ings:['Bifidus Extract','Vitamin C','Niacinamide'], desc:'Signature youth-activating serum with bifidus prebiotic. Strengthens skin barrier, adds radiance, and improves overall skin quality.', weekly:false},
   {id:'lancome-renergie',   name:'Rénergie H.C.F. Triple Serum',              brand:'Lancôme', step:3, time:'BOTH', ings:['Hyaluronic Acid','Vitamin C','Ferulic Acid'], desc:'Triple-action anti-ageing serum. Hyaluronic acid for plumping, vitamin C for brightness, ferulic acid for antioxidant protection.', weekly:false},
   {id:'lancome-absolue',    name:'Absolue Soft Cream',                         brand:'Lancôme', step:5, time:'BOTH', ings:['Rose Wax','Grand Rose Extracts','Peptides'], desc:'Luxury regenerating cream with rose extracts and peptides. Restores density and radiance for mature skin.', weekly:false},
-  {id:'lancome-clarifique', name:'Clarifique Dual Essence',                    brand:'Lancôme', step:2, time:'BOTH', ings:['Lactic Acid','Bifidus Extract'], desc:'Dual-phase brightening essence. Lactic acid gently exfoliates while bifidus strengthens barrier. Shake before use.', weekly:false},
+  {id:'lancome-clarifique', name:'Clarifique Dual Essence',                    brand:'Lancôme', step:2, time:'BOTH', ings:['Lactic Acid','AHA','Bifidus Extract'], desc:'Dual-phase brightening essence. Lactic acid gently exfoliates while bifidus strengthens barrier. Shake before use.', weekly:false},
   {id:'lancome-uv-expert',  name:'UV Expert Aqua-Gel SPF 50+',                brand:'Lancôme', step:7, time:'AM',   ings:['SPF','Niacinamide'], desc:'Lightweight aqua-gel SPF 50+ with niacinamide. Comfortable for everyday wear under makeup.', weekly:false},
 
   // ── CLARINS ──
@@ -628,7 +663,7 @@ const DB = [
   // ── TATCHA ──
   {id:'tatcha-water-cream',name:'The Water Cream',               brand:'Tatcha', step:5, time:'BOTH', ings:['Japanese Wild Rose','Hyaluronic Acid','Oat Extract'], desc:'Oil-free water gel moisturiser that bursts to release skin-beneficial actives. Leaves a pore-refined look.', weekly:false},
   {id:'tatcha-dewy-skin', name:'The Dewy Skin Cream',             brand:'Tatcha', step:5, time:'BOTH', ings:['Hyaluronic Acid','Royal Jelly','Hadasei-3'], desc:'Rich moisturiser for dry and dehydrated skin. Gives the coveted dewy glass skin look.', weekly:false},
-  {id:'tatcha-essence',   name:'The Essence Plumping Skin Softener', brand:'Tatcha', step:2, time:'BOTH', ings:['Hyaluronic Acid','Hadasei-3','Lactic Acid'], desc:'Softening essence with hadasei complex and hyaluronic acid. Preps skin for better serum absorption.', weekly:false},
+  {id:'tatcha-essence',   name:'The Essence Plumping Skin Softener', brand:'Tatcha', step:2, time:'BOTH', ings:['Hyaluronic Acid','Hadasei-3','Lactic Acid','AHA'], desc:'Softening essence with hadasei complex and hyaluronic acid. Preps skin for better serum absorption.', weekly:false},
   {id:'tatcha-rice-wash', name:'The Rice Wash Skin-Softening Cleanser', brand:'Tatcha', step:1, time:'BOTH', ings:['Japanese Rice Bran','Hyaluronic Acid'], desc:'Gentle foaming cleanser with Japanese rice bran. Softens skin without stripping.', weekly:false},
   {id:'tatcha-luminance', name:'The Luminance Primer',            brand:'Tatcha', step:7, time:'AM',   ings:['Hyaluronic Acid','Silica'], desc:'Blurring primer that smooths pores and preps for makeup. Used as the last skincare/first makeup step.', weekly:false},
 
@@ -672,9 +707,9 @@ const CONFLICTS = [
 // ═══════════════════════════════════════════════════════════════
 // APP STATE
 // ═══════════════════════════════════════════════════════════════
-const STORAGE_KEY = 'myRitual_v5';
-const STORAGE_KEY_U = 'myRitual_v5_u';
-const STORAGE_KEY_R = 'myRitual_v5_requests';
+const STORAGE_KEY = 'myRitual_v6';
+const STORAGE_KEY_U = 'myRitual_v6_u';
+const STORAGE_KEY_R = 'myRitual_v6_requests';
 const STEP_LABELS = {1:'Cleanse',2:'Tone / Essence',3:'Serum',4:'Eye Cream',5:'Moisturise',6:'Oil / Balm',7:'SPF / Finish'};
 const STEP_NOTES  = {1:'Always first',2:'Preps & balances',3:'Active treatments',4:'Under-eye care',5:'Seals in hydration',6:'Occlusive layer',7:'Last step in AM'};
 const STEP_EMOJIS = {1:'🧼',2:'💧',3:'⚡',4:'👁️',5:'🛡️',6:'🌿',7:'☀️'};
@@ -922,6 +957,10 @@ function openModal(){
   document.getElementById('suggestions').className='suggestions';
   document.getElementById('matchCard').className='match-card';
   document.getElementById('manualFields').style.display='none';
+  document.getElementById('ingOverrideWrap').style.display='none';
+  document.getElementById('ingOverridePanel').style.display='none';
+  document.getElementById('ingOverrideArrow').textContent='▶';
+  document.getElementById('ingOverrideRows').innerHTML='';
   document.getElementById('fFinish').checked=false;
   document.getElementById('fWeekly').checked=false;
   document.getElementById('modalOverlay').classList.add('open');
@@ -929,7 +968,7 @@ function openModal(){
 }
 function closeModal(){document.getElementById('modalOverlay').classList.remove('open')}
 function handleOverlayClick(e){if(e.target===document.getElementById('modalOverlay'))closeModal()}
-function clearSearch(){document.getElementById('fSearch').value='';document.getElementById('searchClear').style.display='none';document.getElementById('suggestions').className='suggestions';document.getElementById('matchCard').className='match-card';document.getElementById('manualFields').style.display='none';pendingProduct=null;document.getElementById('fSearch').focus()}
+function clearSearch(){document.getElementById('fSearch').value='';document.getElementById('searchClear').style.display='none';document.getElementById('suggestions').className='suggestions';document.getElementById('matchCard').className='match-card';document.getElementById('manualFields').style.display='none';document.getElementById('ingOverrideWrap').style.display='none';pendingProduct=null;document.getElementById('fSearch').focus()}
 
 // ── SEARCH ────────────────────────────────────────────────────
 function onSearch(){
@@ -957,6 +996,52 @@ function onSearch(){
     </div>`).join('');
 }
 
+// Ingredient groups for checkbox grid
+const ING_GROUPS=[
+  {group:'Vitamin C',     items:['Vitamin C','Ferulic Acid']},
+  {group:'Retinoids',     items:['Retinol','Retinaldehyde','Retinoid']},
+  {group:'Exfoliants',    items:['AHA','BHA']},
+  {group:'Brighteners',   items:['Niacinamide','Tranexamic Acid','Kojic Acid','Alpha Arbutin','Azelaic Acid','Glutathione']},
+  {group:'Hydrators',     items:['Hyaluronic Acid','Ceramides','Peptides','Copper Peptides']},
+  {group:'Repair / Bio',  items:['PDRN','Resveratrol','EGF']},
+  {group:'Sun',           items:['SPF']},
+];
+
+function renderIngChecks(containerId, preTicked=[]){
+  const el=document.getElementById(containerId);
+  if(!el) return;
+  el.innerHTML=ING_GROUPS.map(g=>`
+    <div style="margin-bottom:8px">
+      <div style="font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--ink3);margin-bottom:5px">${g.group}</div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px">
+        ${g.items.map(item=>{
+          const checked=preTicked.some(t=>t.toLowerCase()===item.toLowerCase());
+          return `<label style="display:flex;align-items:center;gap:5px;font-size:12px;color:var(--ink2);cursor:pointer;background:${checked?'var(--bloom-l)':'var(--white)'};border:1.5px solid ${checked?'var(--bloom)':'var(--border)'};border-radius:20px;padding:4px 10px;transition:all .15s">
+            <input type="checkbox" data-ing="${item}" ${checked?'checked':''} style="accent-color:var(--bloom);width:13px;height:13px" onchange="this.parentElement.style.background=this.checked?'var(--bloom-l)':'var(--white)';this.parentElement.style.borderColor=this.checked?'var(--bloom)':'var(--border)'">
+            ${item}
+          </label>`;
+        }).join('')}
+      </div>
+    </div>`).join('');
+}
+
+function getTickedIngs(containerId){
+  const el=document.getElementById(containerId);
+  if(!el) return [];
+  return [...el.querySelectorAll('input[data-ing]:checked')].map(cb=>cb.dataset.ing);
+}
+
+function toggleIngOverride(){
+  const panel=document.getElementById('ingOverridePanel');
+  const arrow=document.getElementById('ingOverrideArrow');
+  const open=panel.style.display==='none';
+  panel.style.display=open?'flex':'none';
+  arrow.textContent=open?'▼':'▶';
+  if(open){
+    renderIngChecks('ingOverrideRows', pendingProduct?pendingProduct.ings:[]);
+  }
+}
+
 function selectProduct(dbId){
   const p=DB_INDEX.find(x=>x.id===dbId);
   if(!p) return;
@@ -978,6 +1063,12 @@ function selectProduct(dbId){
       : `<span style="font-size:11.5px;color:var(--ink3);font-style:italic">No key actives ; this is a hydrating or barrier product</span>`);
   document.getElementById('mcNote').textContent=`${p.time==='AM'?'Morning only':p.time==='PM'?'Evening only':'AM + PM'} · Step ${p.step}: ${STEP_LABELS[p.step]}${p.weekly?' · Use 2–3× per week':''}`;
   document.getElementById('manualFields').style.display='none';
+  // Show override disclosure, reset panel to collapsed
+  const ow=document.getElementById('ingOverrideWrap');
+  ow.style.display='flex';
+  document.getElementById('ingOverridePanel').style.display='none';
+  document.getElementById('ingOverrideArrow').textContent='▶';
+  document.getElementById('ingOverrideRows').innerHTML='';
 }
 
 function showManualEntry(){
@@ -991,6 +1082,8 @@ function showManualEntry(){
   document.getElementById('mcIngs').innerHTML='';
   document.getElementById('mcNote').textContent='';
   document.getElementById('manualFields').style.display='flex';
+  document.getElementById('ingOverrideWrap').style.display='none';
+  renderIngChecks('ingCheckRows',[]);
   document.getElementById('fName').value=sv;
   const rn=document.getElementById('reqName');
   if(rn) rn.value=sv;
@@ -998,14 +1091,17 @@ function showManualEntry(){
 
 function saveProduct(){
   if(pendingProduct){
-    // Check not already on shelf
     if(shelf.some(p=>p.dbId===pendingProduct.id)){alert(`${pendingProduct.name} is already on your shelf.`);return}
-    shelf.push({id:uid(),dbId:pendingProduct.id,name:pendingProduct.name,brand:pendingProduct.brand,time:pendingProduct.time,step:pendingProduct.step,ings:pendingProduct.ings,desc:pendingProduct.desc,finish:document.getElementById('fFinish').checked,weekly:document.getElementById('fWeekly').checked});
+    // Merge DB ings with any override ticks (deduplicated)
+    const overrideTicked=getTickedIngs('ingOverrideRows');
+    const mergedIngs=[...new Set([...pendingProduct.ings,...overrideTicked])];
+    shelf.push({id:uid(),dbId:pendingProduct.id,name:pendingProduct.name,brand:pendingProduct.brand,time:pendingProduct.time,step:pendingProduct.step,ings:mergedIngs,desc:pendingProduct.desc,finish:document.getElementById('fFinish').checked,weekly:document.getElementById('fWeekly').checked});
   } else {
     const name=document.getElementById('fName').value.trim();
     const brand=document.getElementById('fBrand').value.trim();
     if(!name||!brand){alert('Please enter a product name and brand.');return}
-    shelf.push({id:uid(),dbId:null,name,brand,time:document.getElementById('fTime').value,step:parseInt(document.getElementById('fStep').value),ings:[],desc:'',finish:document.getElementById('fFinish').checked,weekly:document.getElementById('fWeekly').checked});
+    const manualIngs=getTickedIngs('ingCheckRows');
+    shelf.push({id:uid(),dbId:null,name,brand,time:document.getElementById('fTime').value,step:parseInt(document.getElementById('fStep').value),ings:manualIngs,desc:'',finish:document.getElementById('fFinish').checked,weekly:document.getElementById('fWeekly').checked});
   }
   saveShelf();closeModal();renderShelf();renderPicker();
 }
@@ -1431,7 +1527,7 @@ init();
 <div id="aboutOverlay" style="display:none;position:fixed;inset:0;z-index:900;background:rgba(26,20,16,.5);align-items:center;justify-content:center;padding:20px" onclick="if(event.target===this)closeAbout()">
   <div style="background:#fff;border-radius:20px;width:100%;max-width:400px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.2)" onclick="event.stopPropagation()">
     <div style="padding:22px 22px 0;display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
-      <div style="font-family:Georgia,serif;font-size:20px;font-weight:400;color:#1A1410">About</div>
+      <div style="font-family:var(--font-display);font-size:20px;font-weight:400;color:#1A1410">About</div>
       <button onclick="closeAbout()" style="width:30px;height:30px;border-radius:50%;background:#F5F0EB;border:none;cursor:pointer;font-size:14px;color:#4A3728;display:flex;align-items:center;justify-content:center">✕</button>
     </div>
     <div style="padding:0 22px 24px;display:flex;flex-direction:column;gap:16px">
@@ -1446,7 +1542,7 @@ init();
           </svg>
         </div>
         <div>
-          <div style="font-family:Georgia,serif;font-size:18px;font-weight:400;color:#1A1410">My Skincare Stack</div>
+          <div style="font-family:var(--font-display);font-size:18px;font-weight:400;color:#1A1410">My Skincare Stack</div>
           <div style="font-size:12px;color:#9E8878;margin-top:2px">Your shelf. Your stack. Your skin.</div>
         </div>
       </div>
@@ -1459,4 +1555,4 @@ init();
           <div style="width:38px;height:38px;border-radius:50%;background:#F07C3A;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:white;flex-shrink:0">L</div>
           <div>
             <div style="font-size:14px;font-weight:600;color:#1A1410">Lynn Lim</div>
-            <style="font-size:12px;color:#F07C3A;text-decoration:none">captainpoofypants@gmail.com</style>
+            <a href="/cdn-cgi/l/email-protection#a3c0c2d3d7c2cacdd3ccccc5dad3c2cdd7d0e3c4cec2cacf8dc0ccce" style="font-size:12px;color:#F07C3A;text-decoration:none"><span class="__cf_email__" data-cfemail="a0c3c1d0d4c1c9ced0cfcfc6d9d0c1ced4d3e0c7cdc1
